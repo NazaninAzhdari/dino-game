@@ -23,17 +23,18 @@ package dino_pack is
     constant    pc_GAME_BITS       :   integer     :=pc_VGA_BITS - 2;  --dividing by 4 will drop 2 bits, only 8 bits remains
 
     --parameters of Dino
-    constant    pc_X_DINO       :   integer
-    constant    pc_Y_START      :   integer     :=           --top point of dino in start point
-    constant    pc_DINO_SIZE    :   integer     :=
-    constant    pc_SPEED        :   integer     :=           --clk 
+    constant    pc_X_DINO       :   integer     :=1;
+    constant    pc_Y_START      :   integer     :=87;           --top point of dino in start point
+    constant    pc_DINO_SIZE    :   integer     :=32
+    constant    pc_SPEED        :   integer     :=5000000;           --clk 25
+    constant    pc_RUNNING_SPEED:   integer     :=5000000; --clk 25
     
     
     type ROM32 is array (0 to 31) of unsigned(31 downto 0);
     ------------------------------------------------------
     --Storing 4 different frame f the Dino in ROM constant
     -------------------------------------------------------
-    constant pc_alive    :   ROM32 :=(
+    constant pc_jump    :   ROM32 :=(
         "00000000000000000011111111111000",
         "00000000000000000111111111111111",
         "00000000000000001111111111111111",

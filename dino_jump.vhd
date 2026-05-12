@@ -4,9 +4,10 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity dino_jump is
     port (
-        i_clk   :   in      STD_LOGIC;
-        i_reset :   in      STD_LOGIC; 
-        o_y_dino:   out     unsigned(pc_GAME_BITS -1 downto 0)
+        i_clk       :   in      STD_LOGIC;
+        i_reset     :   in      STD_LOGIC; 
+        i_jump_en   :   in      STD_LOGIC;
+        o_y_dino    :   out     unsigned(pc_GAME_BITS -1 downto 0)
     );
 end dino_jump;
 
@@ -28,7 +29,8 @@ architecture RTL of dino_jump is
 
                 elsif rising_edge(i_clk) then 
                     if i_jump_en = '1' and r_y_dino = pc_Y_START  then
-                        r_velocity <= -10;
+                        r_velocity <= -7;
+
                     end if;
 
                     if r_waiting_counter < pc_SPEED then
@@ -37,6 +39,7 @@ architecture RTL of dino_jump is
                         r_y_dino <= pf_y_dino(r_velocity, r_y_dino);
                         if r_y_dino = pc_Y_START  then
                             r_velocity <= -1;
+
                         end if;
                     end if;
                 end if;
