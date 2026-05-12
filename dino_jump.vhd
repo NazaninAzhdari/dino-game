@@ -6,7 +6,7 @@ entity dino_jump is
     port (
         i_clk   :   in      STD_LOGIC;
         i_reset :   in      STD_LOGIC; 
-        o_y_dino:   out     unsigned()
+        o_y_dino:   out     unsigned(pc_GAME_BITS -1 downto 0)
     );
 end dino_jump;
 
