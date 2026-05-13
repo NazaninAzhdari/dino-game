@@ -2,6 +2,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+library work;
+use work.dino_pack.ALL;
+
 entity dino_SM is
     port (
         i_clk       :   in      STD_LOGIC; --25
@@ -17,7 +20,7 @@ entity dino_SM is
 end dino_SM;
 
 architecture RTL of dino_SM is
-    type state_machine is (IDLE, START_GAME, RUN, COLLIDE, GAME_OVER);
+    type state_machine is (IDLE ,RUN, GAME_OVER);
     signal r_SM     :   state_machine   :=IDLE;
 
     signal r_start  :   STD_LOGIC       :='0';
@@ -28,7 +31,7 @@ architecture RTL of dino_SM is
                                     
 
     begin
-        process(i_clk, i_reset) is
+        process(i_clk, i_reset, r_reset) is
             begin
                 if i_reset = '0' and r_reset = '1' then  --by falling edge of reset switch, the game gets reset
                     --reset 
@@ -57,7 +60,7 @@ architecture RTL of dino_SM is
                             --if while running collide with something
                             --r_SM <= collide
                             if r_waiting_counter < pc_RUNNING_SPEED then  --0.2 sec
-                                r_waiting_counter + 1;
+                                r_waiting_counter <= r_waiting_counter + 1;
                             else
                                 r_waiting_counter <= 0;
 
@@ -75,7 +78,7 @@ architecture RTL of dino_SM is
                             --game over text
 
                             if i_start = '0' and r_start = '1' then
-                                r_SM <= START_GAME;
+                                r_SM <= IDLE;
                             end if;
 
                         when others =>
@@ -88,7 +91,7 @@ architecture RTL of dino_SM is
         o_stand_dino <= '1' when r_SM = IDLE else '0';
         o_dead_dino <= '1' when r_SM = GAME_OVER else '0';
         o_runner1_dino <= r_run1_DV when r_SM = RUN and i_button_L = '1' else '0';
-        o_runner2_dino <= r_run2_DV when r_SM = RUM and i_button_L = '1' else '0';
+        o_runner2_dino <= r_run2_DV when r_SM = RUN and i_button_L = '1' else '0';
         o_jump_en <= '1' when i_button_L = '0' and r_SM = RUN else '0';
 
     end RTL;

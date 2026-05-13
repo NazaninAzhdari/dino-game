@@ -2,6 +2,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+library work;
+use work.dino_pack.ALL;
+
 entity dino_top is
     port (
         i_clk       :   in      STD_LOGIC;
@@ -28,7 +31,7 @@ architecture RTL of dino_top is
     signal w_run2_en  :   STD_LOGIC   :='0';
     signal w_dead_en  :   STD_LOGIC   :='0';
     signal w_jump_en  :   STD_LOGIC   :='0';
-
+	signal r_run_en  :   STD_LOGIC   :='0';
     signal w_x         :   unsigned(pc_VGA_BITS -1 downto 0)   :=(others=>'0');
     signal w_y         :   unsigned(pc_VGA_BITS -1 downto 0)   :=(others=>'0');
     signal r_DE        :   STD_LOGIC    :='0';
@@ -80,13 +83,13 @@ architecture RTL of dino_top is
     --VGA synchronizzing
     -----------------------------------------
     synchronizing_VGA : entity work.HVsync
-    port (
+    port map(
         i_clk25=> r_clk25,
         i_reset=> r_reset,
         o_x =>w_x,
         o_y=> w_y,
-        o_HS=> o_HS,
-        o_VS=> o_VS,
+        o_HS=> o_hdmi_HS,
+        o_VS=> o_hdmi_VS,
         o_DE=> r_DE
     );
 
@@ -97,7 +100,7 @@ architecture RTL of dino_top is
     --Dino State Machine 
     ------------------------------------------
     dino_control: entity work.dino_SM
-    port (
+    port map(
         i_clk=> r_clk25,      --25MHz 
         i_reset=> r_reset,
         i_start=> r_start,
@@ -117,6 +120,7 @@ architecture RTL of dino_top is
         i_clk=> r_clk25,  --25MHz
         i_reset => r_reset,
         i_jump_en => w_jump_en,
+		  i_run_en => r_run_en,
         o_y_dino=> w_y_dino
     );
 
@@ -131,13 +135,15 @@ architecture RTL of dino_top is
         i_y_dino => w_y_dino,
         i_stand_en=> w_stand_en,
         i_run1_en => w_run1_en,
-        i_run2_en=> w_run2_en
-        i_dead_en=> w_run3_en
+        i_run2_en=> w_run2_en,
+        i_dead_en=> w_dead_en,
+		  i_jump_en => w_jump_en,
         o_draw_dino => r_draw_dino
     );
+	 r_run_en <= w_run1_en or w_run2_en or w_jump_en;
 
     o_hdmi_clk <= r_clk25;
     o_hdmi_de <= r_de;
-    o_data_bus <= (others=>'1') when r_draw_dino = '1' and r_de = '1' else '0';
+    o_hdmi_data_bus <= (others=>'1') when r_draw_dino = '1' and r_de = '1' else (others=>'0');
 
     end RTL;

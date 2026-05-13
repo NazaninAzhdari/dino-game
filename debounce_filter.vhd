@@ -28,7 +28,7 @@ architecture RTL of debounce_filter is
                         r_counter <= 0;
                         r_debounced <= i_bouncy;
                     else
-                        r_cunter <= 0;
+                        r_counter <= 0;
                     end if;
                 end if;
             end process;
