@@ -41,6 +41,8 @@ architecture RTL of dino_top is
     signal w_y_dino         :   unsigned(pc_GAME_BITS -1 downto 0)   :=(others=>'0');
 
     signal r_draw_dino        :   STD_LOGIC    :='0';
+    signal r_draw_cactus1        :   STD_LOGIC    :='0';
+    
 
     begin
     ---------------------------------------
@@ -144,6 +146,24 @@ architecture RTL of dino_top is
 
     o_hdmi_clk <= r_clk25;
     o_hdmi_de <= r_de;
-    o_hdmi_data_bus <= (others=>'1') when r_draw_dino = '1' and r_de = '1' else (others=>'0');
+    o_hdmi_data_bus <= "100000001000000010000000" when (( r_draw_dino = '1' or  r_draw_cactus1 = '1') and r_de = '1') else
+	 (others=>'1') when r_de = '1' else
+	 (others=>'0');
+
+
+    ----------------------------------
+    --cactus
+    ---------------------------------------
+    cactus: entity work.cactus_top
+    port map(
+        i_clk25=> r_clk25,
+        i_reset=> r_reset,
+        i_run_en=> r_run_en,
+        i_x=> r_x,
+        i_y=> r_y,
+        o_draw_cactus1=> r_draw_cactus1
+        
+    );
+
 
     end RTL;

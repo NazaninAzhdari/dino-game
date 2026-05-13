@@ -1,6 +1,12 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
 package dino_pack is
     --Function decleration
-    function pf_y_dino(velocity, y_dino: integer) return integer;
+    function pf_y_dino(r_velocity, y_dino: integer) return integer;
+	 function pf_velocity(r_velocity: integer) return integer;
+	 function pf_log2ceil(value:    integer) return integer;
 
     --parameters of VGA 640*480 @ 60Hz timing
     --horizontal parameters
@@ -21,20 +27,23 @@ package dino_pack is
     constant    pc_GAME_WIDTH      :   integer     :=160; --640/4=160
     constant    pc_GAME_HEIGHT     :   integer     :=120; --480/4=120
     constant    pc_GAME_BITS       :   integer     :=pc_VGA_BITS - 2;  --dividing by 4 will drop 2 bits, only 8 bits remains
-
+		constant pc_DEBOUNCE_LIMIT      :       integer   :=250000; 
     --parameters of Dino
     constant    pc_X_DINO       :   integer     :=1;
     constant    pc_Y_START      :   integer     :=87;           --top point of dino in start point
-    constant    pc_DINO_SIZE    :   integer     :=32
-    constant    pc_SPEED        :   integer     :=5000000;           --clk 25
-    constant    pc_RUNNING_SPEED:   integer     :=5000000; --clk 25
+    constant    pc_DINO_SIZE    :   integer     :=32;
+    constant    pc_JUMP_SPEED        :   integer     :=1000000;           --clk 25
+	 constant    pc_CACTUS_SPEED        :   integer     :=2000000;           --clk 25
+    constant    pc_RUNNING_SPEED:   integer     :=2500000; --clk 25
+    constant pc_cactus_WIDTH   :    integer    :=16;
+    constant    pc_LEVEL_LIMIT        :   integer     :=250000000;   --each 10sec with clk 25
     
-    
-    type ROM32 is array (0 to 31) of unsigned(31 downto 0);
+    type ROM32 is array (0 to 31) of unsigned(0 to 31);
+    type ROM16 is array (0 to 15) of unsigned(0 to 15);
     ------------------------------------------------------
     --Storing 4 different frame f the Dino in ROM constant
     -------------------------------------------------------
-    constant pc_jump    :   ROM32 :=(
+    constant pc_stand    :   ROM32 :=(
         "00000000000000000011111111111000",
         "00000000000000000111111111111111",
         "00000000000000001111111111111111",
@@ -104,7 +113,7 @@ package dino_pack is
         "00000000111000000000000000000000"
     );
 
-    constant pc_run1    :   ROM32 :=(
+    constant pc_run2    :   ROM32 :=(
         "00000000000000000011111111111000",
         "00000000000000000111111111111111",
         "00000000000000001111111111111111",
@@ -140,7 +149,7 @@ package dino_pack is
     );
 
     
-    constant pc_alive    :   ROM32 :=(
+    constant pc_dead    :   ROM32 :=(
         "00000000000000000011111111111000",
         "00000000000000000111111111111111",
         "00000000000000001110000111111111",
@@ -150,7 +159,7 @@ package dino_pack is
         "00000000000000001111111111111111",
         "00000000000000001111111111111111",
         "11100000000000001111111111111111",
-        "11100000000000001111111111111111"
+        "11100000000000001111111111111111",
         "10000000000000001111111111111110",
         "10000000000000011111111000000000",
         "11000000000000111111111000000000",
@@ -175,16 +184,57 @@ package dino_pack is
         "00000000111000001111000000000000"
     );
 
+
+    constant pc_cactus   :   ROM16 :=(
+        "0000001100000000",
+        "0000011110000000",
+        "0000011111000110",
+        "1100011111001111",
+        "1110011111001111",
+        "1110011111001111",
+        "1110011111001111",
+        "1111111111001111",
+        "0011111111001110",
+        "0000011111111100",
+        "0000011111111000",
+        "0000011111110000",
+        "0000011111000000",
+        "0000011111000000",
+        "0000011111000000",
+        "0000011111000000"
+    );
+
+
 end package;
 
 package body dino_pack is
-    function pf_y_dino(velocity, y_dino: integer) return integer is
-        variable gravity    :   integer  :=1;
-        variable y_dino_next:   integer  :=y_dino;
+
+	function pf_log2ceil(value:    integer) return integer is
+            variable    v_number            :   integer :=value-1;
+            variable    v_bit_counter       :   integer :=0;
+            begin
+                while v_number > 0 loop
+                    v_number := v_number / 2;
+                    v_bit_counter := v_bit_counter + 1;
+                end loop;
+                return v_bit_counter;
+            end function;
+				
+		 function pf_velocity(r_velocity: integer) return integer is
+        constant gravity    :   integer  :=1;
+		  variable velocity    :   integer;
+        begin
+            velocity   := r_velocity + gravity;
+
+            return velocity;
+        end function;
+
+		  
+    function pf_y_dino(r_velocity: integer; y_dino:  integer) return integer is
+        variable y_dino_next:   integer;
 
         begin
-            velocity   := velocity + gravity;
-            y_dino_next:= y_dino + velocity;
+            y_dino_next:= y_dino + r_velocity;
 
             return y_dino_next;
         end function;
