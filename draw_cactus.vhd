@@ -14,8 +14,9 @@ entity draw_cactus is
         i_x_cactus  :   in      signed(pc_GAME_BITS  downto 0); --one bit more
         i_lfsr      :   in      unsigned(2 downto 0);
         i_cactus_DV :   in      STD_LOGIC;
-        o_cactus_ID:    out      unsigned(1 downto 0);
-        o_draw_cactus:   out      STD_LOGIC
+        o_draw_cactus:   out      STD_LOGIC;
+        o_cactus_height : out   integer;
+        o_cactus_width  : out   integer
     );
 end draw_cactus;
 
@@ -38,6 +39,12 @@ architecture RTL of draw_cactus is
                     r_2_small_cactus when r_cactus_ID = "01" else
                     r_2_big_cactus when r_cactus_ID = "10" else
                     r_small_cactus;    
+
+    o_cactus_width <= 32 when r_cactus_ID = "01" or r_cactus_ID = "10" else
+                    16;
+
+    o_cactus_height <= 32 when r_cactus_ID = "00" or r_cactus_ID = "10" else
+                    16;
     
     process(i_clk) is
         begin
@@ -48,7 +55,7 @@ architecture RTL of draw_cactus is
             end if;
         end process;
 
-        o_cactus_ID <= r_cactus_ID;
+    
 
     r_x <= to_integer(i_x_div_4);
     r_y_div_4 <= to_integer(i_y_div_4);

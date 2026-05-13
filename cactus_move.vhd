@@ -15,7 +15,8 @@ entity cactus_move is
         i_reset     :   in      STD_LOGIC;
         i_run_en    :   in      STD_LOGIC;
         o_cactus_DV :   out     STD_LOGIC;
-        o_x_cactus  :   out     signed(pc_GAME_BITS  downto 0) --one bit more, bcs its singed
+        o_x_cactus  :   out     signed(pc_GAME_BITS  downto 0); --one bit more, bcs its singed
+        i_cactus_width : in     integer
 
     );
 end cactus_move;
@@ -45,8 +46,10 @@ architecture RTL of cactus_move is
 
                             r_x_cactus <=  r_x_cactus -1;
 
-                            if r_x_cactus = -32 then
+                            if i_cactus_width = 16 and r_x_cactus = -16 then
                                 r_x_cactus <= 161;  --off screen
+                            elsif i_cactus_width = 32 and r_x_cactus = -32 then
+                                r_x_cactus <= 161;
                             end if;
                         end if;
 

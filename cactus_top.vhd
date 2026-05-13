@@ -21,7 +21,7 @@ end cactus_top;
 architecture RTL of cactus_top is
     signal w_lfsr : unsigned(2 downto 0)  :=(others=>'0');
     signal w_x_cactus1 : signed(pc_GAME_BITS  downto 0);
-    
+    signal w_cactus_width : integer  :=0;
     signal w_cactus1_DV : STD_LOGIC :='0';
     
 
@@ -47,7 +47,8 @@ architecture RTL of cactus_top is
             i_lfsr => w_lfsr,
             i_x_cactus => w_x_cactus1,
             i_cactus_DV => w_cactus1_DV,
-            o_cactus_ID=> open,
+            o_cactus_heght=> open,
+            o_cactus_width => w_cactus_width,
             o_draw_cactus=> o_draw_cactus1
         );
 
@@ -64,7 +65,8 @@ architecture RTL of cactus_top is
             i_reset=> i_reset,
             i_run_en=> i_run_en,
             o_cactus_DV=> w_cactus1_DV,
-            o_x_cactus=> w_x_cactus1
+            o_x_cactus=> w_x_cactus1,
+            i_cactus_width => w_cactus_width
         );
 
 
