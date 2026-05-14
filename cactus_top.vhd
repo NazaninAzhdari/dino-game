@@ -13,7 +13,10 @@ entity cactus_top is
         i_run_en      :   in      STD_LOGIC;
         i_x     :   in      unsigned(pc_GAME_BITS -1 downto 0);
         i_y     :   in      unsigned(pc_GAME_BITS -1 downto 0);
-        o_draw_cactus1      :   out     STD_LOGIC
+        o_draw_cactus1      :   out     STD_LOGIC;
+		  o_x_cactus  :  out  signed(pc_GAME_BITS downto 0);
+		  o_y_cactus  :  out  integer;
+		  o_cactus_width  : out  integer
        
     );
 end cactus_top;
@@ -47,12 +50,13 @@ architecture RTL of cactus_top is
             i_lfsr => w_lfsr,
             i_x_cactus => w_x_cactus1,
             i_cactus_DV => w_cactus1_DV,
-            o_cactus_heght=> open,
+            o_y_cactus=> o_y_cactus,
             o_cactus_width => w_cactus_width,
             o_draw_cactus=> o_draw_cactus1
         );
 
-
+			o_cactus_width <= w_cactus_width;
+			o_x_cactus <= w_x_cactus1;
         ----------------------------------
         --movement cactus 1
         ----------------------------------

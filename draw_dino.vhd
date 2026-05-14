@@ -36,7 +36,8 @@ architecture RTL of draw_dino is
     --------------------------------------------------------------------
     --Determine which dino should be drawn based on the frame we are in.
     --------------------------------------------------------------------
-    o_draw_dino  <= r_stand_dino when i_stand_en = '1' else
+    o_draw_dino  <= r_dead_dino  when i_dead_en = '1'  else
+							r_stand_dino when i_stand_en = '1' else
 							r_stand_dino when i_jump_en = '1' or r_y_dino /= pc_Y_START else
                     r_run1_dino  when i_run1_en = '1' else
                     r_run2_dino  when i_run2_en = '1'  else   

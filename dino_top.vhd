@@ -25,6 +25,7 @@ architecture RTL of dino_top is
     signal r_clk25  :   STD_LOGIC   :='0';
     signal r_reset  :   STD_LOGIC   :='0';
     signal r_start  :   STD_LOGIC   :='0';
+	 signal w_sm_reset :  STD_LOGIC  :='0';
 
     signal w_stand_en :   STD_LOGIC   :='0';
     signal w_run1_en  :   STD_LOGIC   :='0';
@@ -42,6 +43,10 @@ architecture RTL of dino_top is
 
     signal r_draw_dino        :   STD_LOGIC    :='0';
     signal r_draw_cactus1        :   STD_LOGIC    :='0';
+	 
+	 signal w_x_cactus  :  signed(pc_GAME_BITS downto 0);
+	signal	  w_y_cactus  :   integer;
+	signal	  w_cactus_width  :   integer;
     
 
     begin
@@ -104,14 +109,19 @@ architecture RTL of dino_top is
     dino_control: entity work.dino_SM
     port map(
         i_clk=> r_clk25,      --25MHz 
-        i_reset=> r_reset,
+        i_reset=> w_sm_reset,
         i_start=> r_start,
         i_button_L=> i_button_L,
         o_stand_dino=> w_stand_en,
         o_runner1_dino=> w_run1_en,
         o_runner2_dino=> w_run2_en,
         o_dead_dino=> w_dead_en,
-        o_jump_en=> w_jump_en
+        o_jump_en=> w_jump_en,
+		  i_x_cactus=> w_x_cactus,
+		  i_y_cactus=> w_y_cactus,
+		  i_cactus_width=> w_cactus_width,
+		  i_y_dino => w_y_dino,
+		  o_reset => w_sm_reset
     );
 
     -----------------------------------------
@@ -120,7 +130,7 @@ architecture RTL of dino_top is
     jumping_logic : entity work.dino_jump
     port map(
         i_clk=> r_clk25,  --25MHz
-        i_reset => r_reset,
+        i_reset => w_sm_reset,
         i_jump_en => w_jump_en,
 		  i_run_en => r_run_en,
         o_y_dino=> w_y_dino
@@ -157,11 +167,14 @@ architecture RTL of dino_top is
     cactus: entity work.cactus_top
     port map(
         i_clk25=> r_clk25,
-        i_reset=> r_reset,
+        i_reset=> w_sm_reset,
         i_run_en=> r_run_en,
         i_x=> r_x,
         i_y=> r_y,
-        o_draw_cactus1=> r_draw_cactus1
+        o_draw_cactus1=> r_draw_cactus1,
+		  o_x_cactus => w_x_cactus,
+		  o_y_cactus => w_y_cactus,
+		  o_cactus_width => w_cactus_width
         
     );
 

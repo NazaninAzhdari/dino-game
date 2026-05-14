@@ -15,7 +15,7 @@ entity draw_cactus is
         i_lfsr      :   in      unsigned(2 downto 0);
         i_cactus_DV :   in      STD_LOGIC;
         o_draw_cactus:   out      STD_LOGIC;
-        o_cactus_height : out   integer;
+        o_y_cactus : out   integer;
         o_cactus_width  : out   integer
     );
 end draw_cactus;
@@ -27,24 +27,26 @@ architecture RTL of draw_cactus is
     signal r_2_small_cactus :   STD_LOGIC   :='0';
 
     signal   r_x   : integer  :=0;
-    signal   r_y_div_4   : integer  :=0;
-    signal   r_y_div_8   : integer  :=0;
+    signal   r_y   : integer  :=0;
+    
     signal   r_x_cactus   : integer  :=0;
 	 
 	 signal r_cactus_ID  :  unsigned(1 downto 0)   :=(others=>'0');
      
 
     begin
-    o_draw_cactus <=r_big_cactus when r_cactus_ID = "00" else
-                    r_2_small_cactus when r_cactus_ID = "01" else
-                    r_2_big_cactus when r_cactus_ID = "10" else
-                    r_small_cactus;    
+    o_draw_cactus <=r_small_cactus when r_cactus_ID = "00" else
+                    r_big_cactus when r_cactus_ID = "01" else
+                    r_2_small_cactus when r_cactus_ID = "10" else
+                    r_2_big_cactus;   
 
-    o_cactus_width <= 32 when r_cactus_ID = "01" or r_cactus_ID = "10" else
-                    16;
+    o_cactus_width <= 8 when r_cactus_ID = "00" else
+                    16 when r_cactus_ID = "01" else
+                    17 when r_cactus_ID = "01" else
+                    33;
 
-    o_cactus_height <= 32 when r_cactus_ID = "00" or r_cactus_ID = "10" else
-                    16;
+    o_y_cactus <= 102 when r_cactus_ID = "00" or r_cactus_ID = "10" else  --not completed
+                    86;
     
     process(i_clk) is
         begin
@@ -58,43 +60,45 @@ architecture RTL of draw_cactus is
     
 
     r_x <= to_integer(i_x_div_4);
-    r_y_div_4 <= to_integer(i_y_div_4);
-    r_y_div_8 <= to_integer(i_y_div_4(i_y_div_4'left downto 1));
+    r_y<= to_integer(i_y_div_4);
+    
     r_x_cactus <= to_integer(i_x_cactus);
 
 
-    --Drawing small cactus
-    --width = 16
+    --Drawing small cactus x=8 y=16
+    --width = 8
     --height = 16
-    r_small_cactus <= pc_cactus (r_y_div_4 - 102)(r_x - r_x_cactus) when (r_y_div_4>= 102 and r_y_div_4 <= 117) 
-                                                    and (r_x >= r_x_cactus and r_x < r_x_cactus + pc_CACTUS_WIDTH)										 
+    r_small_cactus <= pc_small_cactus (r_y - 102)(r_x - r_x_cactus) when (r_y>= 102 and r_y <= 117) 
+                                                    and (r_x >= r_x_cactus and r_x < r_x_cactus + 8 )										 
                                                     else '0';
 
-    --Drawing Big cactus
+    --Drawing Big cactus x=16 y=32
     --width = 16
     --height = 32
-    r_big_cactus <= pc_cactus(r_y_div_8 - 43)(r_x - r_x_cactus) when (r_y_div_8>= 43 and r_y_div_8 <= 58) 
-                                            and r_x >= r_x_cactus and r_x < r_x_cactus + pc_CACTUS_WIDTH 							  
+    r_big_cactus <= pc_big_cactus(r_y - 86)(r_x - r_x_cactus) when (r_y>= 86 and r_y <= 117) 
+                                            and (r_x >= r_x_cactus and r_x < r_x_cactus + 16 ) 							  
                                             else '0';
 
-    --Drawing 2 small cactuses
-    --width = 32
+    --Drawing 2 small cactuses, each  X= 8 y=16
+                            -- total  X= 17 y=16
+    --width = 17
     --height = 16
-    r_2_small_cactus <= pc_cactus (r_y_div_4 - 102)(r_x - r_x_cactus) when ((r_y_div_4>= 102 and r_y_div_4 <= 117) 
-                                                        and ( r_x >= r_x_cactus and r_x < r_x_cactus + pc_CACTUS_WIDTH ))
+    r_2_small_cactus <= pc_small_cactus (r_y - 102)(r_x - r_x_cactus) when ((r_y>= 102 and r_y <= 117) 
+                                                        and ( r_x >= r_x_cactus and r_x < r_x_cactus + 8 ))
                                                         else 
-                        pc_cactus (r_y_div_4 - 102)(r_x - r_x_cactus - 17) when ((r_y_div_4>= 102 and r_y_div_4 <= 117) 
-                                                        and (r_x >= r_x_cactus + 17 and r_x < r_x_cactus +17 + pc_CACTUS_WIDTH ))
+                        pc_small_cactus (r_y - 102)(r_x - r_x_cactus - 9) when ((r_y>= 102 and r_y <= 117) 
+                                                        and (r_x >= r_x_cactus + 9 and r_x < r_x_cactus +17 )) --9 +8 = 17
                                                         else '0';
 
-    --Drawing 2 big cactuses
-    --width = 32
+    --Drawing 2 big cactuses, each  X=16 y=32
+                            --total x=33 y=32
+    --width = 33
     --height = 32
-    r_2_big_cactus <= pc_cactus (r_y_div_8 - 43)(r_x - r_x_cactus) when((r_y_div_8>= 43 and r_y_div_8 <= 58) 
-                                                and (r_x >= r_x_cactus and r_x < r_x_cactus + pc_CACTUS_WIDTH ))
+    r_2_big_cactus <= pc_big_cactus (r_y - 86)(r_x - r_x_cactus) when((r_y>= 86 and r_y<= 117) 
+                                                and (r_x >= r_x_cactus and r_x < r_x_cactus + 16 ))
                                                 else 
-                        pc_cactus (r_y_div_8 - 43)(r_x - r_x_cactus - 17) when ((r_y_div_8>= 43 and r_y_div_8 <= 58) 
-                                                and( r_x >= r_x_cactus + 17 and r_x < r_x_cactus+ 17 + pc_CACTUS_WIDTH ))
+                        pc_big_cactus (r_y - 86)(r_x - r_x_cactus - 17) when ((r_y>= 86 and r_y <= 117) 
+                                                and( r_x >= r_x_cactus + 17 and r_x < r_x_cactus+ 33 ))
                                                 else '0';
 
     

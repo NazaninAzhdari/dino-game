@@ -22,7 +22,7 @@ entity cactus_move is
 end cactus_move;
 
 architecture RTL of cactus_move is
-    signal  r_x_cactus      :  integer range -16 to g_X_INITIAL  :=g_X_INITIAL;
+    signal  r_x_cactus      :  integer range -33 to g_X_INITIAL  :=g_X_INITIAL;
     signal  r_move_counter          :  integer range 0 to pc_CACTUS_SPEED       :=0;
     --signal  r_speed_counter         :  integer range 0 to pc_SPEED       :=0;
     --signal  changable_speed         : integer                            :=pc_SPEED;
@@ -46,9 +46,13 @@ architecture RTL of cactus_move is
 
                             r_x_cactus <=  r_x_cactus -1;
 
-                            if i_cactus_width = 16 and r_x_cactus = -16 then
+                            if i_cactus_width = 8 and r_x_cactus = -8 then
                                 r_x_cactus <= 161;  --off screen
-                            elsif i_cactus_width = 32 and r_x_cactus = -32 then
+                            elsif i_cactus_width = 16 and r_x_cactus = -16 then
+                                r_x_cactus <= 161;
+                            elsif i_cactus_width = 17 and r_x_cactus = -17 then
+                                r_x_cactus <= 161;
+                            elsif i_cactus_width = 33 and r_x_cactus = -33 then
                                 r_x_cactus <= 161;
                             end if;
                         end if;
