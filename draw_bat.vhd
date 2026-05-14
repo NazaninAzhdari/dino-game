@@ -27,9 +27,8 @@ architecture RTL of draw_bat is
         r_y <= to_integer(i_y);
         r_x_bat <= to_integer(i_x_bat);
 
-        o_draw_bat <= r_draw_bat1 when i_wing1_DV= '1' else 
-							r_draw_bat2 when i_wing2_DV = '1' else
-							'0';
+        o_draw_bat <= r_draw_bat2 when i_wing2_DV= '1' else 
+							r_draw_bat1;
 
         r_draw_bat1 <= pc_bat1(r_y - 20)(r_x - r_x_bat) when ( r_x >= r_x_bat and r_x < r_x_bat + pc_BAT_WIDTH )
                                                         and (r_y >= 20 and r_y <=35) else

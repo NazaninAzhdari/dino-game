@@ -39,7 +39,7 @@ package dino_pack is
     constant    pc_LEVEL_LIMIT        :   integer     :=250000000;   --each 10sec with clk 25
 
     constant pc_WING_SPEED      :   integer     :=5000000;
-    constant pc_BAT_SPEED       :   integer     :=pc_CACTUS_SPEED;
+    constant pc_BAT_SPEED       :   integer     :=250000;
 	 constant pc_BAT_WIDTH 			:	integer  :=32;
 
     

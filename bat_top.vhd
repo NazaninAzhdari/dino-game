@@ -14,7 +14,8 @@ entity bat_top is
         i_y         :   in      unsigned(pc_GAME_BITS -1 downto 0);
         i_wing1_DV  :   in      STD_LOGIC;
 		  i_wing2_DV  :   in      STD_LOGIC;
-        o_draw_bat  :   out     STD_LOGIC
+        o_draw_bat  :   out     STD_LOGIC;
+        o_x_bat :  out   signed(pc_GAME_BITS +1 downto 0)
     );
 end bat_top;
 
@@ -28,7 +29,7 @@ architecture RTL of bat_top is
         --------------------------------
         bat_movement: entity work.bat_move
         generic map(
-            g_X_INITIAL=> 500
+            g_X_INITIAL=> 240
         )
         port map(
             i_clk=> i_clk25,
@@ -49,6 +50,8 @@ architecture RTL of bat_top is
 				i_wing2_DV=> i_wing2_DV,
             o_draw_bat=> o_draw_bat
         );
+
+        o_x_bat <= w_x_bat;
 
 
     end RTL;

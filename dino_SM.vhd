@@ -22,7 +22,8 @@ entity dino_SM is
 		  i_y_dino   :   in   unsigned(pc_GAME_BITS -1 downto 0);
 		  o_reset  :   out   STD_LOGIC;
           o_wing1_DV    :   out     STD_LOGIC;
-			 o_wing2_DV    :   out     STD_LOGIC
+			 o_wing2_DV    :   out     STD_LOGIC;
+             i_x_bat        :   in      signed(pc_GAME_BITS +1 downto 0)
     );
 end dino_SM;
 
@@ -39,14 +40,18 @@ architecture RTL of dino_SM is
 	signal r_y_dino   :  integer;
 	signal r_x_cactus :  integer;
 
+
     signal r_wing1_DV : STD_LOGIC   :='1';
 	 signal r_wing2_DV : STD_LOGIC   :='1';
 	 signal r_wing_counter  :  integer range 0 to pc_WING_SPEED :=0;
+
+     signal r_x_bat :  integer;
 
     begin
 	 
 	 r_y_dino <= to_integer(i_y_dino);
 	 r_x_cactus <= to_integer(i_x_cactus);
+     r_x_bat <= to_integer(i_x_bat);
 	 
         process(i_clk, i_reset, r_reset) is
             begin
@@ -104,9 +109,16 @@ architecture RTL of dino_SM is
                                 end if;
                             end if;
 
-                            --                                          end of cactus
+                            --collision with cactus                           end of cactus
                             if ((r_x_cactus>= 1 and r_x_cactus <= 23) or (r_x_cactus + i_cactus_width >= 7 and r_x_cactus + i_cactus_width <= 32)) then
                                 if r_y_dino + 26 > i_y_cactus  then
+                                    r_SM <= GAME_OVER;
+                                end if;
+                            end if;
+
+                            --collision with bat
+                            if ((r_x_bat >= 1 and r_x_bat <= 32) or (r_x_bat + pc_BAT_WIDTH >= 7 and r_x_bat + pc_BAT_WIDTH <= 32)) then
+                                if r_y_dino + 10 <= 35 then
                                     r_SM <= GAME_OVER;
                                 end if;
                             end if;
