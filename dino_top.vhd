@@ -47,6 +47,10 @@ architecture RTL of dino_top is
 	 signal w_x_cactus  :  signed(pc_GAME_BITS downto 0);
 	signal	  w_y_cactus  :   integer;
 	signal	  w_cactus_width  :   integer;
+
+    signal w_wing1_DV :   STD_LOGIC   :='0';
+	 signal w_wing2_DV :   STD_LOGIC   :='0';
+    signal r_draw_bat :   STD_LOGIC   :='0';
     
 
     begin
@@ -121,7 +125,9 @@ architecture RTL of dino_top is
 		  i_y_cactus=> w_y_cactus,
 		  i_cactus_width=> w_cactus_width,
 		  i_y_dino => w_y_dino,
-		  o_reset => w_sm_reset
+		  o_reset => w_sm_reset,
+          o_wing1_DV => w_wing1_DV,
+			 o_wing2_DV => w_wing2_DV
     );
 
     -----------------------------------------
@@ -156,7 +162,7 @@ architecture RTL of dino_top is
 
     o_hdmi_clk <= r_clk25;
     o_hdmi_de <= r_de;
-    o_hdmi_data_bus <= "100000001000000010000000" when (( r_draw_dino = '1' or  r_draw_cactus1 = '1') and r_de = '1') else
+    o_hdmi_data_bus <= "100000001000000010000000" when (( r_draw_dino = '1' or  r_draw_cactus1 = '1' or r_draw_bat = '1') and r_de = '1') else
 	 (others=>'1') when r_de = '1' else
 	 (others=>'0');
 
@@ -176,6 +182,21 @@ architecture RTL of dino_top is
 		  o_y_cactus => w_y_cactus,
 		  o_cactus_width => w_cactus_width
         
+    );
+
+    ----------------------------------
+    --bat
+    ----------------------------------
+    bat: entity work.bat_top
+    port map (
+        i_clk25=> r_clk25,
+        i_reset=> w_sm_reset,
+        i_run_en => r_run_en,
+        i_x=> r_x,
+        i_y => r_y,
+        i_wing1_DV=> w_wing1_DV,
+		  i_wing2_DV=> w_wing2_DV,
+        o_draw_bat => r_draw_bat
     );
 
 

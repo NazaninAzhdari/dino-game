@@ -20,7 +20,9 @@ entity dino_SM is
 		  i_y_cactus  :  in  integer;
 		  i_cactus_width  : in  integer;
 		  i_y_dino   :   in   unsigned(pc_GAME_BITS -1 downto 0);
-		  o_reset  :   out   STD_LOGIC
+		  o_reset  :   out   STD_LOGIC;
+          o_wing1_DV    :   out     STD_LOGIC;
+			 o_wing2_DV    :   out     STD_LOGIC
     );
 end dino_SM;
 
@@ -33,9 +35,14 @@ architecture RTL of dino_SM is
     signal r_waiting_counter  :  integer range 0 to pc_RUNNING_SPEED :=0;
     signal r_run1_DV : STD_LOGIC   :='1';
     signal r_run2_DV : STD_LOGIC   :='0';
-                                    
+                 
 	signal r_y_dino   :  integer;
 	signal r_x_cactus :  integer;
+
+    signal r_wing1_DV : STD_LOGIC   :='1';
+	 signal r_wing2_DV : STD_LOGIC   :='1';
+	 signal r_wing_counter  :  integer range 0 to pc_WING_SPEED :=0;
+
     begin
 	 
 	 r_y_dino <= to_integer(i_y_dino);
@@ -83,8 +90,22 @@ architecture RTL of dino_SM is
                                 end if;
                             end if;
 
+                            if r_wing_counter < pc_WING_SPEED then  
+                                r_wing_counter <= r_wing_counter + 1;
+                            else
+                                r_wing_counter <= 0;
+
+                                if r_wing1_DV = '1' then
+                                    r_wing1_DV <= '0';
+												r_wing2_DV <= '1';
+                                else
+                                    r_wing1_DV <= '1';
+												r_wing2_DV <= '0';
+                                end if;
+                            end if;
+
                             --                                          end of cactus
-                            if ((r_x_cactus>= 1 and r_x_cactus <= 23) or (r_x_cactus + i_cactus_width >= 4 and r_x_cactus + i_cactus_width <= 32)) then
+                            if ((r_x_cactus>= 1 and r_x_cactus <= 23) or (r_x_cactus + i_cactus_width >= 7 and r_x_cactus + i_cactus_width <= 32)) then
                                 if r_y_dino + 26 > i_y_cactus  then
                                     r_SM <= GAME_OVER;
                                 end if;
@@ -121,5 +142,9 @@ architecture RTL of dino_SM is
         o_runner1_dino <= r_run1_DV when r_SM = RUN and i_button_L = '1' else '0';
         o_runner2_dino <= r_run2_DV when r_SM = RUN and i_button_L = '1' else '0';
         o_jump_en <= '1' when i_button_L = '0' and r_SM = RUN else '0';
+
+        o_wing1_DV <= r_wing1_DV when r_SM = RUN else '0';
+		  o_wing2_DV <= r_wing2_DV when r_SM = RUN else '0';
+        
 
     end RTL;
