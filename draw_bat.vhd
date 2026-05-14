@@ -11,7 +11,7 @@ entity draw_bat is
         i_y         :   in      unsigned(pc_GAME_BITS -1 downto 0);
         i_x_bat     :   in      signed(pc_GAME_BITS+1 downto 0);  --one bit more because signed
         i_wing1_DV  :   in      STD_LOGIC;
-		  i_wing2_DV  :   in      STD_LOGIC;
+		i_wing2_DV  :   in      STD_LOGIC;
         o_draw_bat  :   out     STD_LOGIC
     );
 end draw_bat;

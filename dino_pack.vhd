@@ -3,34 +3,41 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 package dino_pack is
+    ------------------------
     --Function decleration
-    function pf_y_dino(r_velocity, y_dino: integer) return integer;
-	 function pf_velocity(r_velocity: integer) return integer;
-	 function pf_log2ceil(value:    integer) return integer;
+    ------------------------
+	function pf_log2ceil(value:    integer) return integer;
 
-    --parameters of VGA 640*480 @ 60Hz timing
+    -------------------------------------------
+    --Parameters of VGA 640*480 @ 60Hz timing
+    -------------------------------------------
     --horizontal parameters
     constant    pc_H_ACTIVE    :   integer     :=640;
     constant    pc_H_FP        :   integer     :=16;
     constant    pc_H_SYNC      :   integer     :=96;
     constant    pc_H_BP        :   integer     :=48;
-    constant    pc_H_TOTAL     :   integer     :=pc_H_ACTIVE + pc_H_FP + pc_H_SYNC + pc_H_BP;
+    constant    pc_H_TOTAL     :   integer     :=pc_H_ACTIVE + pc_H_FP + pc_H_SYNC + pc_H_BP; --800 pixels
     --vertical parameters
     constant    pc_V_ACTIVE    :   integer     :=480;
     constant    pc_V_FP        :   integer     :=10;
     constant    pc_V_SYNC      :   integer     :=2;
     constant    pc_V_BP        :   integer     :=33;
-    constant    pc_V_TOTAL     :   integer     :=pc_V_ACTIVE + pc_V_FP + pc_V_SYNC + pc_V_BP; 
+    constant    pc_V_TOTAL     :   integer     :=pc_V_ACTIVE + pc_V_FP + pc_V_SYNC + pc_V_BP; --525 pixels
     constant    pc_VGA_BITS    :   integer     :=pf_log2ceil(pc_H_TOTAL);  --10 bits
     
-    --parameters of Dino game VGA
-    constant    pc_GAME_WIDTH      :   integer     :=160; --640/4=160
-    constant    pc_GAME_HEIGHT     :   integer     :=120; --480/4=120
+    -------------------------------
+    --Parameters of Dino game VGA
+    -------------------------------
+    constant    pc_GAME_WIDTH      :   integer     :=160;              --640/4=160
+    constant    pc_GAME_HEIGHT     :   integer     :=120;              --480/4=120
     constant    pc_GAME_BITS       :   integer     :=pc_VGA_BITS - 2;  --dividing by 4 will drop 2 bits, only 8 bits remains
-		constant pc_DEBOUNCE_LIMIT      :       integer   :=250000; 
-    --parameters of Dino
-    constant    pc_X_DINO       :   integer     :=1;
-    constant    pc_Y_START      :   integer     :=87;           --top point of dino in start point
+	constant    pc_DEBOUNCE_LIMIT  :   integer     :=250000;           --5 milli Sec (with 50MHZ CLK)
+
+    
+    --parameters of Dino Character
+   
+    constant    pc_X_DINO       :   integer     :=1;        --the left poin of the 
+    constant    pc_Y_START      :   integer     :=87;       --top point of dino in start point
     constant    pc_DINO_SIZE    :   integer     :=32;
     constant    pc_JUMP_SPEED        :   integer     :=1000000;           --clk 25
 	 constant    pc_CACTUS_SPEED        :   integer     :=200000;           --clk 25
@@ -42,14 +49,48 @@ package dino_pack is
     constant pc_BAT_SPEED       :   integer     :=250000;
 	 constant pc_BAT_WIDTH 			:	integer  :=32;
 
+
+
+    -------------------------------------------
+    --Parameters of Obstacles: Bat and Cactus
+    -------------------------------------------
+    --Bat
+    constant pc_Y_TOP_BAT               :   integer     :=80;    --the top y cordinate of TOP_BAT.
+    constant pc_Y_MIDDLE_BAT            :   integer     :=96;    --the top y cordinate of MIDDLE_BAT.
+    constant pc_Y_BUTTOM_BAT            :   integer     :=102    --the top y cordinate of the BUTTOM_BAT.
+    constant pc_BAT_WIDTH               :   integer     :=32;
+    constant pc_BAT_HEIGHT              :   integer     :=16;
+    --Small Cactus 
+    constant pc_Y_SMALL_CACTUS          :   integer     :=102;    --the top y cordinate of the small cactus.
+    constant pc_SMALL_CACTUS_HEIGHT     :   integer     :=16;      
+    constant pc_SMALL_CACTUS_WIDTH      :   integer     :=8;
+    --Big Cactus
+    constant pc_Y_BIG_CACTUS            :   integer     :=86;     --the top y cordinate of the big cactus
+    constant pc_BIG_CACTUS_HEIGHT       :   integer     :=32;      
+    constant pc_BIG_CACTUS_WIDTH        :   integer     :=16;
+    --Double Cactuses
+    constant pc_2_SMALL_CACTUS_WIDTH    :   integer     :=17;     --8+8+1=17 Each small cactus width is 8, and one pixel space between them.
+    constant pc_2_BIG_CACTUS_WIDTH      :   integer     :=33;     --16+16+1=33 Each big cactus width is 16, and one pixel space between them.
     
+
+    ---------------------------------
+    --Speed of Elements 
+    ---------------------------------
+    constant pc_OBSTACLE_SPEED          :   integer     :=200000;   --8 milli Sec (with 25MHz CLK)
+
+
+    
+    -----------------------------------------------------
+    --Read Only Memory for storing the Characters
+    -----------------------------------------------------
     type ROM32_32 is array (0 to 31) of unsigned(0 to 31);
     type ROM32_16 is array (0 to 31) of unsigned(0 to 15);
     type ROM16_8  is array (0 to 15) of unsigned(0 to 7);
-	 type ROM16_32  is array (0 to 15) of unsigned(0 to 31);
-    ------------------------------------------------------
-    --Storing 4 different frame f the Dino in ROM constant
-    -------------------------------------------------------
+	type ROM16_32  is array (0 to 15) of unsigned(0 to 31);
+    type ROM16_60  is array (0 to 15) of unsigned(0 to 59);
+    --------------------------------------------------------------------
+    --Storing 6 different frame of the Dino, 2 Cactus and 2 Bat in ROM
+    --------------------------------------------------------------------
     constant pc_stand    :   ROM32_32 :=(
         "00000000000000000011111111111000",
         "00000000000000000111111111111111",
@@ -154,7 +195,6 @@ package dino_pack is
         "00000000000000001100000000000000",
         "00000000000000001111000000000000"
     );
-
     
     constant pc_dead    :   ROM32_32 :=(
         "00000000000000000011111111111000",
@@ -189,6 +229,44 @@ package dino_pack is
         "00000000110000001100000000000000",
         "00000000110000001100000000000000",
         "00000000111000001111000000000000"
+    );
+
+        constant pc_downn_run1    :   ROM16_60 :=(
+        "100000000000000000000000000000000000000000000000000000000000",
+        "110000000000000000000000000000000000000000011111111111111100",
+        "111000000000001111111111111111111111110000111111111111111111",
+        "111100000001111111111111111111111111111111111111001111111111",
+        "111111111111111111111111111111111111111111111111001111111111",
+        "011111111111111111111111111111111111111111111111111111111111",
+        "001111111111111111111111111111111111111111111111111110000000",
+        "000011111111111111111111111111111111110000111111111111111110",
+        "000000001111111111111111111111111111100000000000000000000000",
+        "000000000000111111111111111111111111111110000000000000000000",
+        "000000000000001111111111111111110000001110000000000000000000",
+        "000000000000000001111111111100000000000000000000000000000000",
+        "000000000000000000111000011100000000000000000000000000000000",
+        "000000000000000000110000001111000000000000000000000000000000",
+        "000000000000000000110000000000000000000000000000000000000000",
+        "000000000000000000111100000000000000000000000000000000000000"
+    );
+
+    constant pc_downn_run2    :   ROM16_60 :=(
+        "100000000000000000000000000000000000000000000000000000000000",
+        "110000000000000000000000000000000000000000011111111111111100",
+        "111000000000001111111111111111111111110000111111111111111111",
+        "111100000001111111111111111111111111111111111111001111111111",
+        "111111111111111111111111111111111111111111111111001111111111",
+        "011111111111111111111111111111111111111111111111111111111111",
+        "001111111111111111111111111111111111111111111111111110000000",
+        "000011111111111111111111111111111111110000111111111111111110",
+        "000000001111111111111111111111111111100000000000000000000000",
+        "000000000000111111111111111111111111111110000000000000000000",
+        "000000000000001111111111111111110000001110000000000000000000",
+        "000000000000000001111111111100000000000000000000000000000000",
+        "000000000000000000110000011100000000000000000000000000000000",
+        "000000000000000000111100011000000000000000000000000000000000",
+        "000000000000000000000000011000000000000000000000000000000000",
+        "000000000000000000000000011111000000000000000000000000000000"
     );
 
     constant pc_big_cactus   :   ROM32_16 :=(
@@ -286,7 +364,6 @@ package dino_pack is
 end package;
 
 package body dino_pack is
-
 	function pf_log2ceil(value:    integer) return integer is
             variable    v_number            :   integer :=value-1;
             variable    v_bit_counter       :   integer :=0;
@@ -297,25 +374,6 @@ package body dino_pack is
                 end loop;
                 return v_bit_counter;
             end function;
-				
-		 function pf_velocity(r_velocity: integer) return integer is
-        constant gravity    :   integer  :=1;
-		  variable velocity    :   integer;
-        begin
-            velocity   := r_velocity + gravity;
-
-            return velocity;
-        end function;
-
-		  
-    function pf_y_dino(r_velocity: integer; y_dino:  integer) return integer is
-        variable y_dino_next:   integer;
-
-        begin
-            y_dino_next:= y_dino + r_velocity;
-
-            return y_dino_next;
-        end function;
 
 end package body;
     
