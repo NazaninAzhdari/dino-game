@@ -33,23 +33,17 @@ package dino_pack is
     constant    pc_GAME_BITS       :   integer     :=pc_VGA_BITS - 2;  --dividing by 4 will drop 2 bits, only 8 bits remains
 	constant    pc_DEBOUNCE_LIMIT  :   integer     :=250000;           --5 milli Sec (with 50MHZ CLK)
 
-    
-    --parameters of Dino Character
-   
-    constant    pc_X_DINO       :   integer     :=1;        --the left poin of the 
-    constant    pc_Y_START      :   integer     :=87;       --top point of dino in start point
-    constant    pc_DINO_SIZE    :   integer     :=32;
-    constant    pc_JUMP_SPEED        :   integer     :=1000000;           --clk 25
-	 constant    pc_CACTUS_SPEED        :   integer     :=200000;           --clk 25
-    constant    pc_RUNNING_SPEED:   integer     :=2500000; --clk 25
-    constant pc_cactus_WIDTH   :    integer    :=16;
-    constant    pc_LEVEL_LIMIT        :   integer     :=250000000;   --each 10sec with clk 25
-
-    constant pc_WING_SPEED      :   integer     :=5000000;
-    constant pc_BAT_SPEED       :   integer     :=250000;
-	 constant pc_BAT_WIDTH 			:	integer  :=32;
-
-
+    -------------------------------
+    --Parameters of Dino Character
+    -------------------------------
+    --Standing Dino
+    constant    pc_X_DINO           :   integer     :=1;        --the left x cordinate of the dino
+    constant    pc_Y_START          :   integer     :=87;       --the top y cordinate of dino When starting, later it might jump.
+    constant    pc_DINO_SIZE        :   integer     :=32;       --Dino width= 32, Dino Height = 32
+    --Crawling Dino
+    constant pc_Y_CRAWL             :  integer      :=103;      --the top y cordinate of dino, when crawling
+    constant pc_CRAWL_HEIGHT        :  integer      :=16;        --Dino height when crawling = 16
+    constant pc_CRAWL_WIDTH         :  integer      :=60;        --Dino width when crawling = 60
 
     -------------------------------------------
     --Parameters of Obstacles: Bat and Cactus
@@ -57,7 +51,7 @@ package dino_pack is
     --Bat
     constant pc_Y_TOP_BAT               :   integer     :=80;    --the top y cordinate of TOP_BAT.
     constant pc_Y_MIDDLE_BAT            :   integer     :=96;    --the top y cordinate of MIDDLE_BAT.
-    constant pc_Y_BUTTOM_BAT            :   integer     :=102    --the top y cordinate of the BUTTOM_BAT.
+    constant pc_Y_BUTTOM_BAT            :   integer     :=102;    --the top y cordinate of the BUTTOM_BAT.
     constant pc_BAT_WIDTH               :   integer     :=32;
     constant pc_BAT_HEIGHT              :   integer     :=16;
     --Small Cactus 
@@ -77,8 +71,14 @@ package dino_pack is
     --Speed of Elements 
     ---------------------------------
     constant pc_OBSTACLE_SPEED          :   integer     :=200000;   --8 milli Sec (with 25MHz CLK)
+    constant pc_JUMP_SPEED              :   integer     :=1000000;  --0.04 Sec (with 25MHz CLK)
+    constant pc_RUNNING_SPEED           :   integer     :=2500000;  --0.1 Sec (with 25MHz CLK)
+    constant pc_WING_SPEED              :   integer     :=5000000;  --0.2 Sec (with 25MHz CLK)
 
-
+    ----------------------------------
+    --Color Codes
+    ----------------------------------
+    constant pc_GRAY_COLOR_CODE         :   unsigned     :="100000001000000010000000";
     
     -----------------------------------------------------
     --Read Only Memory for storing the Characters
@@ -231,7 +231,7 @@ package dino_pack is
         "00000000111000001111000000000000"
     );
 
-        constant pc_downn_run1    :   ROM16_60 :=(
+        constant pc_crawl1    :   ROM16_60 :=(
         "100000000000000000000000000000000000000000000000000000000000",
         "110000000000000000000000000000000000000000011111111111111100",
         "111000000000001111111111111111111111110000111111111111111111",
@@ -250,7 +250,7 @@ package dino_pack is
         "000000000000000000111100000000000000000000000000000000000000"
     );
 
-    constant pc_downn_run2    :   ROM16_60 :=(
+    constant pc_crawl2    :   ROM16_60 :=(
         "100000000000000000000000000000000000000000000000000000000000",
         "110000000000000000000000000000000000000000011111111111111100",
         "111000000000001111111111111111111111110000111111111111111111",

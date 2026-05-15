@@ -21,7 +21,6 @@ entity obstacle_top is
 end obstacle_top;
 
 architecture RTL of obstacle_top is
-                                       --dont forget to determine the range of integers!!!!!!!!!!!!
     --Drawing signals
     signal r_big_cactus     :   STD_LOGIC   :='0';
     signal r_2_big_cactus   :   STD_LOGIC   :='0';
@@ -40,65 +39,68 @@ architecture RTL of obstacle_top is
     signal r_obstacle_DV    :  STD_LOGIC                      :='0';
     signal r_obstacle_ID    :  unsigned(2 downto 0)           :=(others=>'0');
     signal r_obstacle_width :  integer range 8 to 33          :=8;
-    signal w_lfsr           :  unsigned(2 downto 0)           :=(others=>'0');
+    signal w_lfsr           :  unsigned(4 downto 0)           :=(others=>'0');
+	 
+	 signal r_clk4  :  STD_LOGIC  :='0';
      
     begin
+
         ------------------------------------
         --Generate random numbers with LFSR
         ------------------------------------
-        gen_random_3_bit: entity work.LFSR3
+        gen_random_5_bit: entity work.LFSR5
         port map(
-        i_clk => i_clk,
-        i_reset=> i_reset  --by resetting the game, the LFSR also gets reset
+        i_clk => r_obstacle_DV,     --seed the LFSR CLK by r_obstacle_DV to don't miss any state. I'm intrested to have all the obstacles in the game.
+        i_reset=> i_reset,          --by resetting the game, the LFSR also gets reset
         o_lfsr=> w_lfsr
         );
-
+        
         ----------------------------------------------------------
         --Determine the obstacle-ID randomly by LFSR
         --when obstacle_DV is high? when obstacle is in off-screen 
         -----------------------------------------------------------
         process(i_clk) is
         begin
-            if rising_edge(i_clk) then
-                if r_obstacle_DV = '1' then
-                    r_obstacle_ID <= w_lfsr(2 downto 0);
-                end if;
+           if rising_edge(i_clk) then
+               if r_obstacle_DV = '1' then
+                   r_obstacle_ID <= w_lfsr(2 downto 0);
+               end if;
             end if;
         end process;
+		  
 
         ------------------------------------------------------------
         --Based on Obstacle-ID draw an Obstacle
         ------------------------------------------------------------
-        o_draw_obstacle <=  r_small_cactus when r_obstacle_ID = "000" else
-                            r_big_cactus when r_obstacle_ID = "001" else
-                            r_2_small_cactus when r_obstacle_ID = "010" else
-                            r_2_big_cactus when r_obstacle_ID = "011" else
-                            r_top_bat when r_obstacle_ID = "100" else
-                            r_middle_bat when r_obstacle_ID = "101" else
-                            r_buttom_bat;
+        o_draw_obstacle <=  r_top_bat when r_obstacle_ID = "001" else
+                            r_middle_bat when r_obstacle_ID = "010" else
+                            r_buttom_bat when r_obstacle_ID = "011" else
+							r_2_small_cactus when r_obstacle_ID = "100" else
+                            r_2_big_cactus when r_obstacle_ID = "101" else
+                            r_small_cactus when r_obstacle_ID = "110" else
+                            r_big_cactus;
 
         --------------------------------------------------------------
         --Based on Obstacle_ID send out the obstacle's spicification
         --------------------------------------------------------------
         o_obstacle_width <= r_obstacle_width;
-        r_obstacle_width <= pc_SMALL_CACTUS_WIDTH when r_obstacle_ID = "000" else
-                            pc_BIG_CACTUS_WIDTH when r_obstacle_ID = "001" else
-                            pc_2_SMALL_CACTUS_WIDTH when r_obstacle_ID = "010" else
-                            pc_2_BIG_CACTUS_WIDTH when r_obstacle_ID = "011" else
-                            pc_BAT_WIDTH;
+        r_obstacle_width <= pc_BAT_WIDTH when r_obstacle_ID = "001" or r_obstacle_ID = "010" or r_obstacle_ID = "011" else
+                            pc_2_SMALL_CACTUS_WIDTH when r_obstacle_ID = "100" else
+                            pc_2_BIG_CACTUS_WIDTH when r_obstacle_ID = "101" else
+                            pc_SMALL_CACTUS_WIDTH when r_obstacle_ID = "110" else
+                            pc_BIG_CACTUS_WIDTH;
 
 
-        o_obstacle_height <= pc_SMALL_CACTUS_HEIGHT when r_obstacle_ID = "000" or r_obstacle_ID = "010" else
-                            pc_BIG_CACTUS_HEIGHT when r_obstacle_ID = "001" or r_obstacle_ID = "011" else
-                            pc_BAT_HEIGHT;
+        o_obstacle_height <= pc BAT_HEIGHT when r_obstacle_ID = "001" or r_obstacle_ID = "010" or r_obstacle_ID = "011" else
+                            pc_SMALL_CACTUS_HEIGHT when r_obstacle_ID = "100" or r_obstacle_ID = "110" else
+                            pc_BIG_CACTUS_HEIGHT;
 
-        o_y_obstacle <= pc_Y_SMALL_CACTUS when r_obstacle_ID = "000" or r_obstacle_ID = "010" else --The top-left y cordinate of the obstacle
-                        pc_Y_BIG_CACTUS when r_obstacle_ID = "001" or r_obstacle_ID = "011" else
-                        pc_Y_TOP_BAT when r_obstacle_ID = "100" else
-                        pc_Y_MIDDLE_BAT when r_obstacle_ID = "101" else
-                        pc_Y_BUTTOM_BAT; 
-
-
+        o_y_obstacle <= pc_Y_TOP_BAT when r_obstacle_ID = "001" else         --The top-left y cordinate of the obstacle
+                        pc_Y_MIDDLE_BAT when r_obstacle_ID = "010" else
+                        pc_Y_BUTTOM_BAT when r_obstacle_ID = "011" else 
+                        pc_Y_SMALL_CACTUS when r_obstacle_ID = "100" or r_obstacle_ID = "110" else 
+                        pc_Y_BIG_CACTUS;
+                        
         ---------------------------------------
         --Component decleration - Drawing Bats
         ---------------------------------------
@@ -126,7 +128,7 @@ architecture RTL of obstacle_top is
             i_y => i_y,
             i_x_cactus => r_x_obstacle,
             o_draw_small_cactus => r_small_cactus,
-            o_draw_sbig_cactus => r_big_cactus,
+            o_draw_big_cactus => r_big_cactus,
             o_draw_2_small_cactus=> r_2_small_cactus,
             o_draw_2_big_cactus=> r_2_big_cactus
         );

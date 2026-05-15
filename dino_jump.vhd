@@ -10,15 +10,15 @@ entity dino_jump is
         i_clk       :   in      STD_LOGIC;
         i_reset     :   in      STD_LOGIC; 
         i_jump_en   :   in      STD_LOGIC;
-		  i_run_en    :   in      STD_LOGIC;
+		i_run_en    :   in      STD_LOGIC;
         o_y_dino    :   out     unsigned(pc_GAME_BITS -1 downto 0)
     );
 end dino_jump;
 
 architecture RTL of dino_jump is
-    signal r_y_dino          :  integer                     :=pc_Y_START;  --Top point of Dino
-    signal r_velocity        :  integer                     :=0;
-    signal r_waiting_counter :  integer range 0 to pc_JUMP_SPEED :=0;
+    signal r_y_dino          :  integer range 0 to pc_GAME_HEIGHT -1 :=pc_Y_START;  --the top y cordinate of Dino
+    signal r_velocity        :  integer                              :=0;
+    signal r_waiting_counter :  integer range 0 to pc_JUMP_SPEED     :=0;
 
     begin
 
@@ -45,10 +45,10 @@ architecture RTL of dino_jump is
                             r_y_dino <= r_y_dino + r_velocity;
                         end if;
 								
-								if r_y_dino > pc_Y_START  then
-                                    r_velocity <= 0;
-                                    r_y_dino <= pc_Y_START;
-                            end if;
+                        if r_y_dino > pc_Y_START  then
+                            r_velocity <= 0;
+                            r_y_dino <= pc_Y_START;
+                        end if;
                     end if;
                 end if;
             end process;

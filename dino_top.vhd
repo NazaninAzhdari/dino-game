@@ -7,202 +7,179 @@ use work.dino_pack.ALL;
 
 entity dino_top is
     port (
-        i_clk       :   in      STD_LOGIC;
-        i_reset     :   in      STD_LOGIC;
-        i_start     :   in      STD_LOGIC;
-        i_button_L    :   in      STD_LOGIC;
+        i_clk               :   in      STD_LOGIC;  --50MHz
+        i_reset             :   in      STD_LOGIC;
+        i_start             :   in      STD_LOGIC;
+        i_jump_button_L     :   in      STD_LOGIC;
+        i_crawl_button_L    :   in      STD_LOGIC;
 
-        --hdmi_interface
-        o_hdmi_clk  :   out     STD_LOGIC;
-        o_hdmi_HS   :   out     STD_LOGIC;
-        o_hdmi_VS   :   out     STD_LOGIC;
-        o_hdmi_DE   :   out     STD_LOGIC;
-        o_hdmi_data_bus: out    unsigned(23 downto 0)
+        --hdmi interface
+        o_hdmi_clk          :   out     STD_LOGIC;
+        o_hdmi_HS           :   out     STD_LOGIC;
+        o_hdmi_VS           :   out     STD_LOGIC;
+        o_hdmi_DE           :   out     STD_LOGIC;
+        o_hdmi_data_bus     :   out     unsigned(23 downto 0)
     );
 end dino_top;
 
 architecture RTL of dino_top is
-    signal r_clk25  :   STD_LOGIC   :='0';
-    signal r_reset  :   STD_LOGIC   :='0';
-    signal r_start  :   STD_LOGIC   :='0';
-	 signal w_sm_reset :  STD_LOGIC  :='0';
+    signal r_clk25      :   STD_LOGIC   :='0';
+    signal r_reset      :   STD_LOGIC   :='0';
+    signal r_start      :   STD_LOGIC   :='0';
+	signal w_reset_game :   STD_LOGIC   :='0';
 
-    signal w_stand_en :   STD_LOGIC   :='0';
-    signal w_run1_en  :   STD_LOGIC   :='0';
-    signal w_run2_en  :   STD_LOGIC   :='0';
-    signal w_dead_en  :   STD_LOGIC   :='0';
-    signal w_jump_en  :   STD_LOGIC   :='0';
-	signal r_run_en  :   STD_LOGIC   :='0';
-    signal w_x         :   unsigned(pc_VGA_BITS -1 downto 0)   :=(others=>'0');
-    signal w_y         :   unsigned(pc_VGA_BITS -1 downto 0)   :=(others=>'0');
-    signal r_DE        :   STD_LOGIC    :='0';
+    signal w_stand_en   :   STD_LOGIC   :='0';
+    signal w_run_en     :   STD_LOGIC   :='0';
+    signal w_dead_en    :   STD_LOGIC   :='0';
+    signal w_jump_en    :   STD_LOGIC   :='0';
+	signal w_crawl_en   :   STD_LOGIC   :='0';
 
-    signal r_x         :   unsigned(pc_GAME_BITS -1 downto 0)   :=(others=>'0');  --divided by 4
-    signal r_y         :   unsigned(pc_GAME_BITS -1 downto 0)   :=(others=>'0');  --divided by 4
-    signal w_y_dino         :   unsigned(pc_GAME_BITS -1 downto 0)   :=(others=>'0');
+    signal w_x          :   unsigned(pc_VGA_BITS -1 downto 0)    :=(others=>'0');
+    signal w_y          :   unsigned(pc_VGA_BITS -1 downto 0)    :=(others=>'0');
+    signal r_x          :   unsigned(pc_GAME_BITS -1 downto 0)   :=(others=>'0');  --divided by 4
+    signal r_y          :   unsigned(pc_GAME_BITS -1 downto 0)   :=(others=>'0');  --divided by 4
 
-    signal r_draw_dino        :   STD_LOGIC    :='0';
-    signal r_draw_cactus1        :   STD_LOGIC    :='0';
+    signal w_DE           :   STD_LOGIC    :='0';
+    signal w_draw_dino    :   STD_LOGIC    :='0';
+    signal w_draw_obstacle:   STD_LOGIC    :='0';
+    signal w_y_dino       :   unsigned(pc_GAME_BITS -1 downto 0) :=(others=>'0');
 	 
-	 signal w_x_cactus  :  signed(pc_GAME_BITS downto 0);
-	signal	  w_y_cactus  :   integer;
-	signal	  w_cactus_width  :   integer;
+	--signal w_x_obstacle  :  signed(pc_GAME_BITS downto 0);
+	--signal	  w_y_obstacle  :   integer;
+	--signal	  w_obstacle_width  :   integer;
+    --signal	  w_obstacle_height  :   integer;
 
-    signal w_wing1_DV :   STD_LOGIC   :='0';
-	 signal w_wing2_DV :   STD_LOGIC   :='0';
-    signal r_draw_bat :   STD_LOGIC   :='0';
-
-    signal w_x_bat  :   signed(pc_GAME_BITS + 1 downto 0)  :=(others=>'0');
-    
 
     begin
-    ---------------------------------------
-    --Dividing the Frequency of the Clock
-    ---------------------------------------
-    dividing_frequency : entity work.freq_divider
-    generic map(
-        g_CLK_CYCLES_FOR_HALF_PERIOD=> 1
-    )
-    port map(
-        i_clk=> i_clk,    --50MHz
-        o_clk=> r_clk25   --25MHz
-    );
+        ---------------------------------------
+        --Dividing the Frequency of the Clock
+        ---------------------------------------
+        dividing_frequency : entity work.freq_divider
+        generic map(
+            g_CLK_CYCLES_FOR_HALF_PERIOD=> 1
+        )
+        port map(
+            i_clk=> i_clk,    --50MHz
+            o_clk=> r_clk25   --25MHz
+        );
 
 
-    ---------------------------------------------
-    --Debouncing the Buttons
-    ---------------------------------------------
-    debouncing_reset: entity work.debounce_filter
-    generic map(
-        g_DEBOUNCE_LIMIT=> pc_DEBOUNCE_LIMIT
-    )
-    port map(
-        i_clk=> i_clk,   --50MHz
-        i_bouncy=> i_reset,
-        o_debounced=> r_reset
-    );
+        ---------------------------------------------
+        --Debouncing the Buttons
+        ---------------------------------------------
+        debouncing_reset: entity work.debounce_filter
+        generic map(
+            g_DEBOUNCE_LIMIT=> pc_DEBOUNCE_LIMIT
+        )
+        port map(
+            i_clk=> i_clk,   --50MHz
+            i_bouncy=> i_reset,
+            o_debounced=> r_reset
+        );
 
-    debouncing_start: entity work.debounce_filter
-    generic map(
-        g_DEBOUNCE_LIMIT=> pc_DEBOUNCE_LIMIT
-    )
-    port map(
-        i_clk=> i_clk,   --50MHz
-        i_bouncy=> i_start,
-        o_debounced=> r_start
-    );
+        debouncing_start: entity work.debounce_filter
+        generic map(
+            g_DEBOUNCE_LIMIT=> pc_DEBOUNCE_LIMIT
+        )
+        port map(
+            i_clk=> i_clk,   --50MHz
+            i_bouncy=> i_start,
+            o_debounced=> r_start
+        );
 
-    -----------------------------------------
-    --VGA synchronizzing
-    -----------------------------------------
-    synchronizing_VGA : entity work.HVsync
-    port map(
-        i_clk25=> r_clk25,
-        i_reset=> r_reset,
-        o_x =>w_x,
-        o_y=> w_y,
-        o_HS=> o_hdmi_HS,
-        o_VS=> o_hdmi_VS,
-        o_DE=> r_DE
-    );
+        -----------------------------------------
+        --VGA synchronizzing
+        -----------------------------------------
+        synchronizing_VGA : entity work.HVsync
+        port map(
+            i_clk25=> r_clk25,
+            i_reset=> r_reset,
+            o_x =>w_x,
+            o_y=> w_y,
+            o_HS=> o_hdmi_HS,
+            o_VS=> o_hdmi_VS,
+            o_DE=> w_DE
+        );
 
-    r_x <= w_x(w_x'left downto 2);
-    r_y <= w_y(w_y'left downto 2);
+        r_x <= w_x(w_x'left downto 2);
+        r_y <= w_y(w_y'left downto 2);
 
-    ------------------------------------------
-    --Dino State Machine 
-    ------------------------------------------
-    dino_control: entity work.dino_SM
-    port map(
-        i_clk=> r_clk25,      --25MHz 
-        i_reset=> w_sm_reset,
-        i_start=> r_start,
-        i_button_L=> i_button_L,
-        o_stand_dino=> w_stand_en,
-        o_runner1_dino=> w_run1_en,
-        o_runner2_dino=> w_run2_en,
-        o_dead_dino=> w_dead_en,
-        o_jump_en=> w_jump_en,
-		  i_x_cactus=> w_x_cactus,
-		  i_y_cactus=> w_y_cactus,
-		  i_cactus_width=> w_cactus_width,
-		  i_y_dino => w_y_dino,
-		  o_reset => w_sm_reset,
-          o_wing1_DV => w_wing1_DV,
-			 o_wing2_DV => w_wing2_DV,
-             i_x_bat => w_x_bat
-    );
-
-    -----------------------------------------
-    --Dino jump function
-    -----------------------------------------
-    jumping_logic : entity work.dino_jump
-    port map(
-        i_clk=> r_clk25,  --25MHz
-        i_reset => w_sm_reset,
-        i_jump_en => w_jump_en,
-		  i_run_en => r_run_en,
-        o_y_dino=> w_y_dino
-    );
+        ------------------------------------------
+        --Dino State Machine 
+        ------------------------------------------
+        dino_control: entity work.dino_SM
+        port map(
+            i_clk=> r_clk25,      --25MHz 
+            i_reset=> r_reset,
+            i_start=> r_start,
+            i_jump_button_L=> i_jump_button_L,
+            i_crawl_button_L=> i_crawl_button_L,
+            o_stand_en=> w_stand_en,
+            o_dead_en=> w_dead_en,
+            o_run_en=> w_run_en,
+            o_jump_en=> w_jump_en,
+            o_crawl_en=> w_crawl_en,
+            o_reset_game => w_reset_game
+        );
 
 
-    ---------------------------------------
-    --draw_dino
-    ---------------------------------------
-    draw_dino: entity work.draw_dino
-    port map(
-        i_x=> r_x,
-        i_y=> r_y,
-        i_y_dino => w_y_dino,
-        i_stand_en=> w_stand_en,
-        i_run1_en => w_run1_en,
-        i_run2_en=> w_run2_en,
-        i_dead_en=> w_dead_en,
-		  i_jump_en => w_jump_en,
-        o_draw_dino => r_draw_dino
-    );
-	 r_run_en <= w_run1_en or w_run2_en or w_jump_en;
+        -----------------------------------------
+        --Dino jump function
+        -----------------------------------------
+        jumping_logic : entity work.dino_jump
+        port map(
+            i_clk=> r_clk25,  --25MHz
+            i_reset => w_reset_game,
+            i_jump_en => w_jump_en,
+            i_run_en => w_run_en,
+            o_y_dino=> w_y_dino
+        );
 
-    o_hdmi_clk <= r_clk25;
-    o_hdmi_de <= r_de;
-    o_hdmi_data_bus <= "100000001000000010000000" when (r_draw_dino = '1' and r_de = '1') else
-	 "100000001000000010000000" when ((r_draw_cactus1 = '1' or r_draw_bat = '1') and r_de = '1') else
-	 (others=>'1') when r_de = '1' else
-	 (others=>'0');
+        ---------------------------------------
+        --draw_dino
+        ---------------------------------------
+        draw_dino: entity work.draw_dino
+        port map(
+            i_clk => r_clk25,
+            i_reset => w_reset_game,
+            i_x=> r_x,
+            i_y=> r_y,
+            i_y_dino => w_y_dino,
+            i_stand_en=> w_stand_en,
+            i_run_en => w_run_en,
+            i_dead_en=> w_dead_en,
+            i_jump_en => w_jump_en,
+            i_crawl_en => w_crawl_en,
+            o_draw_dino => w_draw_dino
+        );
 
 
-    ----------------------------------
-    --cactus
-    ---------------------------------------
-    cactus: entity work.cactus_top
-    port map(
-        i_clk25=> r_clk25,
-        i_reset=> w_sm_reset,
-        i_run_en=> r_run_en,
-        i_x=> r_x,
-        i_y=> r_y,
-        o_draw_cactus1=> r_draw_cactus1,
-		  o_x_cactus => w_x_cactus,
-		  o_y_cactus => w_y_cactus,
-		  o_cactus_width => w_cactus_width
-        
-    );
+        ----------------------------------------------
+        --Obstacle management - Drawing and Movement
+        ----------------------------------------------
+        mange_obstacle_drawing_and_movement: entity work.obstacle_top
+        port map(
+            i_clk=> r_clk25,
+            i_reset=> w_reset_game,
+            i_run_en=> w_run_en,
+            i_x=> r_x,
+            i_y=> r_y,
+            o_draw_obstacle=> w_draw_obstacle,
+            o_obstacle_height=> open,
+            o_obstacle_width=> open,
+            o_x_obstacle=> open,
+            o_y_obstacle=> open
+        );
 
-    ----------------------------------
-    --bat
-    ----------------------------------
-    bat: entity work.bat_top
-    port map (
-        i_clk25=> r_clk25,
-        i_reset=> w_sm_reset,
-        i_run_en => r_run_en,
-        i_x=> r_x,
-        i_y => r_y,
-        i_wing1_DV=> w_wing1_DV,
-		  i_wing2_DV=> w_wing2_DV,
-        o_draw_bat => r_draw_bat,
-        o_x_bat => w_x_bat
-    );
+
+        ---------------------------------------------
+        --Painting the game + HDMI ports connection
+        ---------------------------------------------
+        o_hdmi_clk <= r_clk25;
+        o_hdmi_de <= w_de;
+        o_hdmi_data_bus <= pc_GRAY_COLOR_CODE when ((w_draw_dino = '1' or w_draw_obstacle = '1' ) and w_de = '1') else
+        (others=>'1') when w_de = '1' else
+        (others=>'0');
 
 
     end RTL;
