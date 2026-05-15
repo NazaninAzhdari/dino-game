@@ -44,10 +44,10 @@ architecture RTL of dino_top is
     signal w_draw_obstacle:   STD_LOGIC    :='0';
     signal w_y_dino       :   unsigned(pc_GAME_BITS -1 downto 0) :=(others=>'0');
 	 
-	--signal w_x_obstacle  :  signed(pc_GAME_BITS downto 0);
-	--signal	  w_y_obstacle  :   integer;
-	--signal	  w_obstacle_width  :   integer;
-    --signal	  w_obstacle_height  :   integer;
+	signal w_x_obstacle  :  signed(pc_GAME_BITS downto 0)  :=(others=>'0');
+	signal	  w_y_obstacle  :   integer;
+	signal	  w_obstacle_width  :   integer;
+    signal	  w_obstacle_height  :   integer;
 
 
     begin
@@ -119,7 +119,13 @@ architecture RTL of dino_top is
             o_run_en=> w_run_en,
             o_jump_en=> w_jump_en,
             o_crawl_en=> w_crawl_en,
-            o_reset_game => w_reset_game
+            o_reset_game => w_reset_game,
+
+            i_x_obstacle => w_x_obstacle,
+            i_y_obstacle => w_y_obstacle,
+            i_obstacle_width => w_obstacle_width,
+            i_obstacle_height => w_obstacle_height,
+            i_y_dino => w_y_dino
         );
 
 
@@ -165,10 +171,10 @@ architecture RTL of dino_top is
             i_x=> r_x,
             i_y=> r_y,
             o_draw_obstacle=> w_draw_obstacle,
-            o_obstacle_height=> open,
-            o_obstacle_width=> open,
-            o_x_obstacle=> open,
-            o_y_obstacle=> open
+            o_obstacle_height=> w_obstacle_height,
+            o_obstacle_width=> w_obstacle_width,
+            o_x_obstacle=> w_x_obstacle,
+            o_y_obstacle=> w_y_obstacle
         );
 
 
@@ -177,7 +183,7 @@ architecture RTL of dino_top is
         ---------------------------------------------
         o_hdmi_clk <= r_clk25;
         o_hdmi_de <= w_de;
-        o_hdmi_data_bus <= pc_GRAY_COLOR_CODE when ((w_draw_dino = '1' or w_draw_obstacle = '1' ) and w_de = '1') else
+        o_hdmi_data_bus <= pc_GRAY_COLOR_CODE when ((w_draw_dino = '1' or w_draw_obstacle = '1' or w_y = 415 ) and w_de = '1') else
         (others=>'1') when w_de = '1' else
         (others=>'0');
 

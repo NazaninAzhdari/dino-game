@@ -17,13 +17,13 @@ entity dino_SM is
         o_jump_en       :   out     STD_LOGIC;
         o_run_en        :   out     STD_LOGIC;
         o_crawl_en      :   out     STD_LOGIC;
-        o_reset_game    :   out     STD_LOGIC
+        o_reset_game    :   out     STD_LOGIC;
 
-		--i_x_cactus  :  in  signed(pc_GAME_BITS downto 0);
-		--i_y_cactus  :  in  integer;
-		--i_cactus_width  : in  integer;
-		--i_y_dino   :   in   unsigned(pc_GAME_BITS -1 downto 0);
-		--i_x_bat        :   in      signed(pc_GAME_BITS +1 downto 0)
+		i_x_obstacle  :  in  signed(pc_GAME_BITS downto 0);
+		i_y_obstacle  :  in  integer;
+		i_obstacle_width  : in  integer;
+        i_obstacle_height:  in   integer;
+		i_y_dino   :   in   unsigned(pc_GAME_BITS -1 downto 0)
     );
 end dino_SM;
 
@@ -34,15 +34,15 @@ architecture RTL of dino_SM is
     signal r_reset  :   STD_LOGIC       :='0';
     
                  
-	--signal r_y_dino   :  integer;
-	--signal r_x_cactus :  integer;
-    --signal r_x_bat :  integer;
+	signal r_y_dino   :  integer;
+	signal r_x_obstacle :  integer;
+
 
     begin
 	 
-        --r_y_dino <= to_integer(i_y_dino);
-        --r_x_cactus <= to_integer(i_x_cactus);
-        --r_x_bat <= to_integer(i_x_bat);
+        r_y_dino <= to_integer(i_y_dino);
+        r_x_obstacle <= to_integer(i_x_obstacle);
+
 
         --Registering reset and start switches
         process(i_clk) is
@@ -73,19 +73,39 @@ architecture RTL of dino_SM is
                         when RUN =>
                             
 
-                            --collision with cactus                           end of cactus
-                            --if ((r_x_cactus>= 1 and r_x_cactus <= 23) or (r_x_cactus + i_cactus_width >= 7 and r_x_cactus + i_cactus_width <= 32)) then
-                            --    if r_y_dino + 26 > i_y_cactus  then
-                            --        r_SM <= GAME_OVER;
-                            --    end if;
-                            --end if;
+                            
+                                if i_jump_button_L = '0' or r_y_dino /= pc_Y_START then
+												--it can collide with cactus from front side, buttom side, back side
+												--it can collide with bats from front side , buttom. back, top
+												if (((r_x_obstacle> pc_X_DINO + 6 and r_x_obstacle < pc_X_DINO + pc_DINO_SIZE - 9) 
+												or(r_x_obstacle + i_obstacle_width > pc_X_DINO + 6 and r_x_obstacle + i_obstacle_width < pc_X_DINO + pc_DINO_SIZE - 9)) 
+												and (( i_y_obstacle >= r_y_dino  and i_y_obstacle  <= r_y_dino + pc_DINO_SIZE) 
+												or (i_y_obstacle + i_obstacle_height  >= r_y_dino  and i_y_obstacle + i_obstacle_height <= r_y_dino + pc_DINO_SIZE ))) then
+													 r_SM <= GAME_OVER;
+												end if;
 
-                            --collision with bat
-                            --if ((r_x_bat >= 1 and r_x_bat <= 32) or (r_x_bat + pc_BAT_WIDTH >= 7 and r_x_bat + pc_BAT_WIDTH <= 32)) then
-                            --    if r_y_dino + 10 <= 35 then
-                            --        r_SM <= GAME_OVER;
-                            --    end if;
-                            --end if;
+										  elsif i_crawl_button_L = '0' then
+												--it can collide with cactus from front signed
+												--it can collide with bat from front signed
+
+												if ((r_x_obstacle> pc_X_DINO and r_x_obstacle < pc_X_DINO + pc_CRAWL_WIDTH) and
+					 								 (i_y_obstacle > pc_Y_CRAWL and i_y_obstacle < pc_Y_CRAWL + pc_CRAWL_HEIGHT)) then
+													 r_SM <= GAME_OVER;
+												end if;
+
+										  else
+												--it can collide with cactus from front signed
+												--it can collide with bat from front side
+												if ((r_x_obstacle> pc_X_DINO + 6 and r_x_obstacle < pc_X_DINO + pc_DINO_SIZE - 9) and
+													 (i_y_obstacle > pc_Y_START and i_y_obstacle < pc_Y_START + pc_DINO_SIZE)) then
+													 r_SM <= GAME_OVER;
+												end if;
+
+										  end if;
+
+
+                            
+
 
                         when GAME_OVER =>
                             --GAME OVER text

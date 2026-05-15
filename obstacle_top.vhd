@@ -91,7 +91,7 @@ architecture RTL of obstacle_top is
                             pc_BIG_CACTUS_WIDTH;
 
 
-        o_obstacle_height <= pc BAT_HEIGHT when r_obstacle_ID = "001" or r_obstacle_ID = "010" or r_obstacle_ID = "011" else
+        o_obstacle_height <= pc_BAT_HEIGHT when (r_obstacle_ID = "001" or r_obstacle_ID = "010" or r_obstacle_ID = "011") else
                             pc_SMALL_CACTUS_HEIGHT when r_obstacle_ID = "100" or r_obstacle_ID = "110" else
                             pc_BIG_CACTUS_HEIGHT;
 

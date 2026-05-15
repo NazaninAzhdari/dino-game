@@ -8,7 +8,7 @@ entity LFSR5 is
         i_reset :   in      STD_LOGIC;
         o_lfsr  :   out     unsigned(4 downto 0) 
     );
-end LFSR3;
+end LFSR5;
 
 architecture RTL of LFSR5 is
     signal r_lfsr      :   unsigned(4 downto 0)    :=(others=>'0');
