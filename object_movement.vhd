@@ -7,8 +7,8 @@ use work.dino_pack.ALL;
 
 entity object_movement is
     generic (
-        g_X_INITIAL     :   integer   :=161                 --initial cordinate of the first object. can not be more than 255
-        g_MOVEMENT_SPEED:   integer   :=pc_OBSTACLE_SPEED;  --set pc_OBSTACLE_SPEED or pc_CLOUD_SPEED
+        g_X_INITIAL     :   integer   :=161;                 --initial cordinate of the first object. can not be more than 255
+        g_MOVEMENT_SPEED:   integer   :=pc_OBSTACLE_SPEED  --set pc_OBSTACLE_SPEED or pc_CLOUD_SPEED
     );
     port (
         i_clk               :   in      STD_LOGIC;

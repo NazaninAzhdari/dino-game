@@ -71,40 +71,37 @@ architecture RTL of dino_SM is
                             end if;
 
                         when RUN =>
-                            
 
-                            
-                                if i_jump_button_L = '0' or r_y_dino /= pc_Y_START then
-												--it can collide with cactus from front side, buttom side, back side
-												--it can collide with bats from front side , buttom. back, top
-												if (((r_x_obstacle> pc_X_DINO + 6 and r_x_obstacle < pc_X_DINO + pc_DINO_SIZE - 9) 
-												or(r_x_obstacle + i_obstacle_width > pc_X_DINO + 6 and r_x_obstacle + i_obstacle_width < pc_X_DINO + pc_DINO_SIZE - 9)) 
-												and (( i_y_obstacle >= r_y_dino  and i_y_obstacle  <= r_y_dino + pc_DINO_SIZE) 
-												or (i_y_obstacle + i_obstacle_height  >= r_y_dino  and i_y_obstacle + i_obstacle_height <= r_y_dino + pc_DINO_SIZE ))) then
-													 r_SM <= GAME_OVER;
-												end if;
+                            if i_jump_button_L = '0' or r_y_dino /= pc_Y_START then
+                                --When Jumping:
+                                --Dino can collide with cactus from front side, buttom side, back side.
+                                --Dino can collide with bats from front, buttom. back, top side.
+                                if (((r_x_obstacle>= pc_X_START_COL_AREA and r_x_obstacle <= pc_X_END_COL_AREA) 
+                                or(r_x_obstacle + i_obstacle_width >= pc_X_START_COL_AREA and r_x_obstacle + i_obstacle_width <= pc_X_END_COL_AREA)) 
+                                and (( i_y_obstacle >= r_y_dino  and i_y_obstacle  <= r_y_dino + pc_DINO_SIZE) 
+                                or (i_y_obstacle + i_obstacle_height  >= r_y_dino  and i_y_obstacle + i_obstacle_height <= r_y_dino + pc_DINO_SIZE ))) then
+                                        r_SM <= GAME_OVER;
+                                end if;
 
-										  elsif i_crawl_button_L = '0' then
-												--it can collide with cactus from front signed
-												--it can collide with bat from front signed
+                            elsif i_crawl_button_L = '0' then
+                                --when Crawling:
+                                --Dino can collide with cactus from front side
+                                --Dino can collide with bat from front side
+                                if ((r_x_obstacle>= pc_X_START_COL_AREA and r_x_obstacle <= pc_X_END_COL_AREA) and
+                                        (i_y_obstacle >= pc_Y_CRAWL and i_y_obstacle <= pc_Y_CRAWL + pc_CRAWL_HEIGHT)) then
+                                        r_SM <= GAME_OVER;
+                                end if;
 
-												if ((r_x_obstacle> pc_X_DINO and r_x_obstacle < pc_X_DINO + pc_CRAWL_WIDTH) and
-					 								 (i_y_obstacle > pc_Y_CRAWL and i_y_obstacle < pc_Y_CRAWL + pc_CRAWL_HEIGHT)) then
-													 r_SM <= GAME_OVER;
-												end if;
+                            else
+                                --When Running:
+                                --Dino can collide with cactus from front side
+                                --Dino can collide with bat from front side
+                                if ((r_x_obstacle>= pc_X_START_COL_AREA and r_x_obstacle <= pc_X_END_COL_AREA) and
+                                        (i_y_obstacle >= pc_Y_START and i_y_obstacle <= pc_Y_START + pc_DINO_SIZE)) then
+                                        r_SM <= GAME_OVER;
+                                end if;
 
-										  else
-												--it can collide with cactus from front signed
-												--it can collide with bat from front side
-												if ((r_x_obstacle> pc_X_DINO + 6 and r_x_obstacle < pc_X_DINO + pc_DINO_SIZE - 9) and
-													 (i_y_obstacle > pc_Y_START and i_y_obstacle < pc_Y_START + pc_DINO_SIZE)) then
-													 r_SM <= GAME_OVER;
-												end if;
-
-										  end if;
-
-
-                            
+                            end if;
 
 
                         when GAME_OVER =>

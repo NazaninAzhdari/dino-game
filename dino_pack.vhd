@@ -84,11 +84,21 @@ package dino_pack is
     constant pc_JUMP_SPEED              :   integer     :=1000000;  --0.04 Sec (with 25MHz CLK)
     constant pc_RUNNING_SPEED           :   integer     :=2500000;  --0.1 Sec (with 25MHz CLK)
     constant pc_WING_SPEED              :   integer     :=5000000;  --0.2 Sec (with 25MHz CLK)
+    constant pc_CLOUD_SPEED             :   integer     :=2000000; --25
+
+    ----------------------------------
+    --Parameter of collision
+    ----------------------------------
+    constant pc_X_START_COL_AREA    :   integer  :=pc_X_DINO + 7;   --6 is for limiting the area
+    constant pc_X_END_COL_AREA      :   integer  :=pc_X_DINO + pc_DINO_SIZE - 10;  --9 is for limiting the area
 
     ----------------------------------
     --Color Codes
     ----------------------------------
-    constant pc_GRAY_COLOR_CODE         :   unsigned     :="100000001000000010000000";
+    constant pc_DINO_COLOR_CODE         :   unsigned     :="010000000100000001000000";
+    constant pc_OBSTACLE_COLOR_CODE         :   unsigned     :="011000000110000001100000";
+    constant pc_CLOUD_COLOR_CODE         :   unsigned     :="110000001100000011000000";
+    constant pc_BACK_COLOR_CODE         :     unsigned     :="111000001110000011100000";
     
     -----------------------------------------------------
     --Read Only Memory for storing the Characters
@@ -380,7 +390,7 @@ package dino_pack is
         "00000000000100000000000000000000"
     );
 
-    constant pc_cloud :  ROM17_20  :=(
+    constant pc_cloud :  ROM17_40  :=(
         "0000000000000000000011110000000000000000",
         "0000000000000000111110010000000000000000",
         "0000000000000001000100001100000000000000",

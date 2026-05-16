@@ -139,7 +139,7 @@ architecture RTL of obstacle_top is
         movement_of_obstacles: entity work.object_movement
         generic map(
             g_X_INITIAL=> 200,  --off screen
-            g_MOVEMET_SPEED => pc_OBSTACLE_SPEED
+            g_MOVEMENT_SPEED => pc_OBSTACLE_SPEED
         )
         port map(
             i_clk=> i_clk,

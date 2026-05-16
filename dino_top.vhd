@@ -42,6 +42,7 @@ architecture RTL of dino_top is
     signal w_DE           :   STD_LOGIC    :='0';
     signal w_draw_dino    :   STD_LOGIC    :='0';
     signal w_draw_obstacle:   STD_LOGIC    :='0';
+    signal w_draw_cloud:   STD_LOGIC    :='0';
     signal w_y_dino       :   unsigned(pc_GAME_BITS -1 downto 0) :=(others=>'0');
 	 
 	signal w_x_obstacle  :  signed(pc_GAME_BITS downto 0)  :=(others=>'0');
@@ -178,14 +179,28 @@ architecture RTL of dino_top is
         );
 
 
+        ------------------------------------------------
+        --Clouds: movement and drawing
+        ------------------------------------------------
+        clouds: entity work.cloud_top
+        port map(
+            i_clk=> i_clk,
+            i_reset=> w_reset_game,
+            i_run_en=> w_run_en,
+            i_x=> r_x,
+            i_y=> r_y,
+            o_draw_cloud=> w_draw_cloud
+        );
+
         ---------------------------------------------
         --Painting the game + HDMI ports connection
         ---------------------------------------------
         o_hdmi_clk <= r_clk25;
         o_hdmi_de <= w_de;
-        o_hdmi_data_bus <= pc_GRAY_COLOR_CODE when ((w_draw_dino = '1' or w_draw_obstacle = '1' or w_y = 415 ) and w_de = '1') else
-        (others=>'1') when w_de = '1' else
-        (others=>'0');
-
+        o_hdmi_data_bus <= pc_DINO_COLOR_CODE when (w_draw_dino = '1' and w_de = '1') else
+                        pc_OBSTACLE_COLOR_CODE when ((w_draw_obstacle = '1' or  w_y = 415) and w_de = '1' ) else
+                        pc_CLOUD_COLOR_CODE when (w_draw_cloud = '1' and w_de = '1') else  
+                        pc_BACK_COLOR_CODE when w_de = '1' else
+                        (others=>'0');
 
     end RTL;

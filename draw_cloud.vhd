@@ -7,10 +7,10 @@ use work.dino_pack.ALL;
 
 entity draw_cloud is
     port (
-        i_x             :   in      STD_LOGIC;
-        i_y             :   in      STD_LOGIC;
-        i_x_cloud       :   in      STD_LOGIC;
-        o_draw_cloud    :   out     STD_LOGIC;
+        i_x             :   in      unsigned(pc_GAME_BITS -1 downto 0);
+        i_y             :   in      unsigned(pc_GAME_BITS -1 downto 0);
+        i_x_cloud       :   in      signed(pc_GAME_BITS downto 0);
+        o_draw_cloud    :   out     STD_LOGIC
     );
 end draw_cloud;
 
