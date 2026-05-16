@@ -70,6 +70,12 @@ package dino_pack is
     constant pc_2_SMALL_CACTUS_WIDTH    :   integer     :=17;     --8+8+1=17 Each small cactus width is 8, and one pixel space between them.
     constant pc_2_BIG_CACTUS_WIDTH      :   integer     :=33;     --16+16+1=33 Each big cactus width is 16, and one pixel space between them.
     
+    -----------------------------------------------
+    --Non obstacle parameters: Clouds and Ground
+    -----------------------------------------------
+    constant pc_Y_CLOUD                 :   integer     :=20;    --the top y cordinate of the cloud.
+    constant pc_CLOUD_HEIGHT            :   integer     :=17;      
+    constant pc_CLOUD_WIDTH             :   integer     :=40;
 
     ---------------------------------
     --Speed of Elements 
@@ -92,6 +98,7 @@ package dino_pack is
     type ROM16_8  is array (0 to 15) of unsigned(0 to 7);
 	type ROM16_32  is array (0 to 15) of unsigned(0 to 31);
     type ROM20_40  is array (0 to 19) of unsigned(0 to 39);
+    type ROM17_40  is array (0 to 16) of unsigned(0 to 39);
     --------------------------------------------------------------------
     --Storing 6 different frame of the Dino, 2 Cactus and 2 Bat in ROM
     --------------------------------------------------------------------
@@ -373,6 +380,25 @@ package dino_pack is
         "00000000000100000000000000000000"
     );
 
+    constant pc_cloud :  ROM17_20  :=(
+        "0000000000000000000011110000000000000000",
+        "0000000000000000111110010000000000000000",
+        "0000000000000001000100001100000000000000",
+        "0000000000000001000000001110000000000000",
+        "0000000000000010000000000011000000000000",
+        "0000000000001110000000000011000000000000",
+        "0000000000010000000000000001100000000000",
+        "0000000000100000000000000000010000000000",
+        "0000000000100000000000000000011100000000",
+        "0000000011000000000000000000000010000000",
+        "0000000100100000000000000000000001000000",
+        "0000001100000000000000000000000001010000",
+        "0000001000000000000000000000000000010000",
+        "0000001000000000000000000000000000010000",
+        "0000000100001101000000000010000000100000",
+        "0000000011111111111011011111100111000000",
+        "0000000000000000000110000000000000000000"
+    );
 end package;
 
 package body dino_pack is

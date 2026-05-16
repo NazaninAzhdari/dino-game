@@ -136,17 +136,18 @@ architecture RTL of obstacle_top is
         -----------------------------------------------------------------
         -- Component Decleration - Determining the Movement of Obstacles
         -----------------------------------------------------------------
-        movement_of_obstacles: entity work.obstacle_movement
+        movement_of_obstacles: entity work.object_movement
         generic map(
-            g_X_INITIAL=> 200  --off screen
+            g_X_INITIAL=> 200,  --off screen
+            g_MOVEMET_SPEED => pc_OBSTACLE_SPEED
         )
         port map(
             i_clk=> i_clk,
             i_reset=> i_reset,
             i_run_en=> i_run_en,
-            i_obstacle_width => r_obstacle_width,
-            o_obstacle_DV => r_obstacle_DV,
-            o_x_obstacle => r_x_obstacle
+            i_object_width => r_obstacle_width,
+            o_object_DV => r_obstacle_DV,
+            o_x_object => r_x_obstacle
         );
 
         o_x_obstacle <= r_x_obstacle;
