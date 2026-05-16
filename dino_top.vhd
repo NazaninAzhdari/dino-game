@@ -175,7 +175,8 @@ architecture RTL of dino_top is
             o_obstacle_height=> w_obstacle_height,
             o_obstacle_width=> w_obstacle_width,
             o_x_obstacle=> w_x_obstacle,
-            o_y_obstacle=> w_y_obstacle
+            o_y_obstacle=> w_y_obstacle,
+            o_score => ----------------------------
         );
 
 

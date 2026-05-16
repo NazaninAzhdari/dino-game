@@ -16,7 +16,8 @@ entity obstacle_top is
         o_obstacle_height   :   out     integer;
         o_obstacle_width    :   out     integer;
         o_x_obstacle        :   out     signed(pc_GAME_BITS downto 0);  --one bit more, BCS its signed
-        o_y_obstacle        :   out     integer
+        o_y_obstacle        :   out     integer;
+        o_score             :   out     unsigned(15 downto 0)
     );
 end obstacle_top;
 
@@ -42,6 +43,7 @@ architecture RTL of obstacle_top is
     signal w_lfsr           :  unsigned(4 downto 0)           :=(others=>'0');
 	 
 	 signal r_clk4  :  STD_LOGIC  :='0';
+     signal r_score : integer range 0 to 9999 :=0;
      
     begin
 
@@ -151,6 +153,30 @@ architecture RTL of obstacle_top is
         );
 
         o_x_obstacle <= r_x_obstacle;
+
+        --------------------------------------------------------------------
+        --Calculating the score:
+        --obstacle_DV is high when we are in off-screen, and it's low when we are in on-screen.
+        --by coming to on-screen part, it goes to low(falling edge). by exiting from on-screen it goes high(rising_edge)
+        --so by rising edge of this signal we can determine that an obstacle has crossed the whole screen successfully 
+        --without colliding with something.
+        --so in this case we increase the score by one.
+        --------------------------------------------------------------------
+        process(r_obstacle_DV, i_reset) is
+            begin
+                if i_reset = '1' then
+                    r_score <= 0;
+
+                elsif rising_edge(r_obstacle_DV) then
+                    r_score <= r_score + 1;
+
+                    if r_score = 9999 then
+                        r_score <= 0;
+                    end if;
+                end if;
+            end process;
+
+            o_score <= to_unsigned(r_score);
 
 
     end RTL;

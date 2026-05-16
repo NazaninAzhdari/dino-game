@@ -409,6 +409,7 @@ package dino_pack is
         "0000000011111111111011011111100111000000",
         "0000000000000000000110000000000000000000"
     );
+
 end package;
 
 package body dino_pack is
