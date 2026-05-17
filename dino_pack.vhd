@@ -53,9 +53,9 @@ package dino_pack is
     --Parameters of Obstacles: Bat and Cactus
     -------------------------------------------
     --Bat
-    constant pc_Y_TOP_BAT               :   integer     :=40;    --the top y cordinate of TOP_BAT.
-    constant pc_Y_MIDDLE_BAT            :   integer     :=50;    --the top y cordinate of MIDDLE_BAT.
-    constant pc_Y_BUTTOM_BAT            :   integer     :=60;    --the top y cordinate of the BUTTOM_BAT.
+    constant pc_Y_TOP_BAT               :   integer     :=65;    --the top y cordinate of TOP_BAT.
+    constant pc_Y_MIDDLE_BAT            :   integer     :=70;    --the top y cordinate of MIDDLE_BAT.
+    constant pc_Y_BUTTOM_BAT            :   integer     :=85;    --the top y cordinate of the BUTTOM_BAT.
     constant pc_BAT_WIDTH               :   integer     :=32;
     constant pc_BAT_HEIGHT              :   integer     :=16;
     --Small Cactus 

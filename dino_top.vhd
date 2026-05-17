@@ -18,7 +18,11 @@ entity dino_top is
         o_hdmi_HS           :   out     STD_LOGIC;
         o_hdmi_VS           :   out     STD_LOGIC;
         o_hdmi_DE           :   out     STD_LOGIC;
-        o_hdmi_data_bus     :   out     unsigned(23 downto 0)
+        o_hdmi_data_bus     :   out     unsigned(23 downto 0);
+
+        --7 segment interface
+        o_7seg1             :   out     unsigned(6 downto 0);
+        o_7seg2             :   out     unsigned(6 downto 0)
     );
 end dino_top;
 
@@ -49,6 +53,14 @@ architecture RTL of dino_top is
 	signal	  w_y_obstacle  :   integer;
 	signal	  w_obstacle_width  :   integer;
     signal	  w_obstacle_height  :   integer;
+
+    signal w_score_binary : unsigned(7 downto 0)  :=(others=>'0');
+    signal r_score_binary : unsigned(7 downto 0)  :=(others=>'0');
+
+    signal r_7seg1, r_7seg2 :  unsigned(6 downto 0) :=(others=>'0');
+    signal r_double_dabble_en  :   STD_LOGIC  :='0';
+    signal w_7seg_en   :  STD_LOGIC  :='0';
+    signal w_score_BCD   :  unsigned(7 downto 0);
 
 
     begin
@@ -160,6 +172,19 @@ architecture RTL of dino_top is
             o_draw_dino => w_draw_dino
         );
 
+        ------------------------------------------------
+        --Clouds: movement and drawing
+        ------------------------------------------------
+        clouds: entity work.cloud_top
+        port map(
+            i_clk=> i_clk,
+            i_reset=> w_reset_game,
+            i_run_en=> w_run_en,
+            i_x=> r_x,
+            i_y=> r_y,
+            o_draw_cloud=> w_draw_cloud
+        );
+
 
         ----------------------------------------------
         --Obstacle management - Drawing and Movement
@@ -176,22 +201,66 @@ architecture RTL of dino_top is
             o_obstacle_width=> w_obstacle_width,
             o_x_obstacle=> w_x_obstacle,
             o_y_obstacle=> w_y_obstacle,
-            o_score => ----------------------------
+            o_score => w_score_binary
         );
 
+        -----------------------------------------------------------------------------
+        --Generating enable signal for double-dabble
+        --enable goes high if the score has changed. meaning that we have a new score
+        -----------------------------------------------------------------------------
+        process(r_clk25) is
+            begin
+                if rising_edge(r_clk25) then
+                    r_score_binary <= w_score_binary;
+                    if w_score_binary /= r_score_binary then
+                        r_double_dabble_en <= '1';
+                    else
+                        r_double_dabble_en <= '0';
+                    end if;
+                end if;
+            end process;
 
-        ------------------------------------------------
-        --Clouds: movement and drawing
-        ------------------------------------------------
-        clouds: entity work.cloud_top
+
+        -------------------------------------------------------------------
+        --Convert the Binary Score to BCD using double dabble algorithem
+        -------------------------------------------------------------------
+        convert_binary_to_BCD: entity work.double_dabble
+        generic map(
+            g_BINARY_BIT_LIMIT=> 8,   --Maximum bit to represent 9999
+            g_DECIMAL_DIGIT_LIMIT=> 2  --Maximum digit to represent 9999
+        )
         port map(
-            i_clk=> i_clk,
-            i_reset=> w_reset_game,
-            i_run_en=> w_run_en,
-            i_x=> r_x,
-            i_y=> r_y,
-            o_draw_cloud=> w_draw_cloud
+            i_clk=> r_clk25,
+            i_en=> r_double_dabble_en,
+            i_binary=> w_score_binary,
+            o_BCD_DV=> w_7seg_en,
+            o_BCD=> w_score_BCD
         );
+
+        --------------------------------
+        --Seven Segments
+        --------------------------------
+        seven_segment_1: entity work.SevenSeg_display
+        port map(
+            i_clk=> r_clk25,
+            i_BCD => w_score_BCD(3 downto 0),
+            i_en=> w_7seg_en,
+            o_7seg => r_7seg1
+        );
+
+        seven_segment_2: entity work.SevenSeg_display
+        port map(
+            i_clk=> r_clk25,
+            i_BCD => w_score_BCD(7 downto 4),
+            i_en=> w_7seg_en,
+            o_7seg => r_7seg2 
+        );
+
+
+        o_7seg1 <= not r_7seg1;
+        o_7seg2 <= not r_7seg2;
+        
+
 
         ---------------------------------------------
         --Painting the game + HDMI ports connection

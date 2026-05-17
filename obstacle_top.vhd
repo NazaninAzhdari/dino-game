@@ -17,7 +17,7 @@ entity obstacle_top is
         o_obstacle_width    :   out     integer;
         o_x_obstacle        :   out     signed(pc_GAME_BITS downto 0);  --one bit more, BCS its signed
         o_y_obstacle        :   out     integer;
-        o_score             :   out     unsigned(15 downto 0)
+        o_score             :   out     unsigned(7 downto 0)
     );
 end obstacle_top;
 
@@ -43,7 +43,7 @@ architecture RTL of obstacle_top is
     signal w_lfsr           :  unsigned(4 downto 0)           :=(others=>'0');
 	 
 	 signal r_clk4  :  STD_LOGIC  :='0';
-     signal r_score : integer range 0 to 9999 :=0;
+     signal r_score : integer range 0 to 99 :=0;
      
     begin
 
@@ -170,13 +170,13 @@ architecture RTL of obstacle_top is
                 elsif rising_edge(r_obstacle_DV) then
                     r_score <= r_score + 1;
 
-                    if r_score = 9999 then
+                    if r_score = 99 then
                         r_score <= 0;
                     end if;
                 end if;
             end process;
 
-            o_score <= to_unsigned(r_score);
+            o_score <= to_unsigned(r_score, o_score'length);
 
 
     end RTL;
