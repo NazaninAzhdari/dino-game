@@ -43,7 +43,10 @@ architecture RTL of obstacle_top is
     signal w_lfsr           :  unsigned(4 downto 0)           :=(others=>'0');
 	 
 	 signal r_clk4  :  STD_LOGIC  :='0';
-     signal r_score : integer range 0 to 99 :=0;
+     signal r_score : integer range 0 to 100 :=0;
+	  
+	  attribute keep : boolean;
+		attribute keep of r_obstacle_DV : signal is true;
      
     begin
 
@@ -168,10 +171,8 @@ architecture RTL of obstacle_top is
                     r_score <= 0;
 
                 elsif rising_edge(r_obstacle_DV) then
+						if r_score < 100 then
                     r_score <= r_score + 1;
-
-                    if r_score = 99 then
-                        r_score <= 0;
                     end if;
                 end if;
             end process;

@@ -7,6 +7,13 @@ package dino_pack is
     --Function decleration
     ------------------------
 	function pf_log2ceil(value:    integer) return integer;
+	function pf_draw_letter_G(x: integer; y: integer) return STD_LOGIC;
+	function pf_draw_letter_A(x: integer; y: integer) return STD_LOGIC;
+	function pf_draw_letter_M(x: integer; y: integer) return STD_LOGIC;
+	function pf_draw_letter_E(x: integer; y: integer) return STD_LOGIC;
+	function pf_draw_letter_O(x: integer; y: integer) return STD_LOGIC;
+	function pf_draw_letter_V(x: integer; y: integer) return STD_LOGIC;
+	function pf_draw_letter_R(x: integer; y: integer) return STD_LOGIC;
 
     -------------------------------------------
     --Parameters of VGA 640*480 @ 60Hz timing
@@ -410,6 +417,29 @@ package dino_pack is
         "0000000000000000000110000000000000000000"
     );
 
+    constant pc_start  : ROM20_40  :=(
+    "0001111111001111111111110111111111110000",
+    "0011111111101111111111111111111111111000",
+    "0011000001111000000110001100111000001100",
+    "0011001100010110011110000100110011100100",
+    "0011001110010110010010000000110011100100",
+    "0011001110010110010010000000110011100100",
+    "0011001110011110011110010000110011100100",
+    "0011001100111110011110011000110011100100",
+    "0001000001101000000110011100111000001100",
+    "0000111111000111111111110111101111111000",
+    "0000111111110111110011110111111111111000",
+    "0001111111111111111111111111111111111100",
+    "0001110000011110001110011100110000000100",
+    "0011100111111100100110001000110011111100",
+    "0011001111111001110010000000110011111000",
+    "0011001100011001110010000000110000001000",
+    "0001001110011000000010010100110011111000",
+    "0000100110011001110010011100110011111100",
+    "0000010000011001110010010100110000000100",
+    "0000001111111110011111110011111111111100"
+);       
+
 end package;
 
 package body dino_pack is
@@ -423,6 +453,90 @@ package body dino_pack is
                 end loop;
                 return v_bit_counter;
             end function;
+
+    ------------------------------------------
+    --Draw letters
+    --Size of letters 5*7, Width=5, Height=7
+    ------------------------------------------
+    function pf_draw_letter_A(x: integer; y: integer) return STD_LOGIC is
+            begin
+                if ((y=0) and (x>=1 and x<=3))
+                or ((y=1 or y=2 or y=4 or y=5 or y=6) and (x=0 or x=4))
+                or (y=3) then
+                    return '1';
+                else 
+                    return '0';
+                end if;
+        end function;
+
+    function pf_draw_letter_R(x: integer; y: integer) return STD_LOGIC is
+            begin
+                if ((y=0 or y=3) and (x>=0 and x<=3))
+                or ((y=1 or y=2 or y=6) and (x=0 or x=4)) 
+                or ((y=4) and (x=0 or x=2))
+                or ((y=5) and (x=0 or x=3)) then
+                    return '1';
+                else 
+                    return '0';
+                end if;
+        end function;
+
+
+        function pf_draw_letter_E(x: integer; y: integer) return STD_LOGIC is
+            begin
+                if ((y=0 or y=6))
+                or ((y=1 or y=2 or y=4 or y=5) and (x=0))
+                or ((y=3) and (x>=0 and x<=3)) then
+                    return '1';
+                else 
+                    return '0';
+                end if;
+        end function;
+
+        function pf_draw_letter_G(x: integer; y: integer) return STD_LOGIC is
+            begin
+                if ((y=0 or y=6) and (x>=1 and x<=3)) 
+                or ((y=1 or y=4 or y=5) and (x=0 or x=4))
+                or ((y=2 or y=3) and (x=0))
+                or ((y=3) and (x>=2 and x<=4)) then
+                    return '1';
+                else 
+                    return '0';
+                end if;
+        end function;
+
+        function pf_draw_letter_M(x: integer; y: integer) return STD_LOGIC is
+
+            begin
+                if ((y=0 or y=3 or y=4 or y=5 or y=6) and (x=0 or x=4))
+                or ((y=1) and (x/=2))
+                or ((y=2) and (x/=1 and x/=3)) then
+                    return '1';
+                else 
+                    return '0';
+                end if;
+        end function;
+        
+        function pf_draw_letter_O(x: integer; y: integer) return STD_LOGIC is
+            begin
+                if ((y>=1 and y<=5) and (x=0 or x=4))
+                or ((y=0 or y=6) and (x>=1 and x<=3)) then
+                    return '1';
+                else 
+                    return '0';
+                end if;
+        end function;
+        
+        function pf_draw_letter_V(x: integer; y: integer) return STD_LOGIC is
+            begin
+                if ((y>=0 and y<=3) and (x=0 or x=4))
+                or ((y=4 or y=5) and (x=1 or x=3)) 
+                or ((y=6) and (x=2)) then
+                    return '1';
+                else 
+                    return '0';
+                end if;
+        end function;
 
 end package body;
     

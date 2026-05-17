@@ -47,6 +47,8 @@ architecture RTL of dino_top is
     signal w_draw_dino    :   STD_LOGIC    :='0';
     signal w_draw_obstacle:   STD_LOGIC    :='0';
     signal w_draw_cloud:   STD_LOGIC    :='0';
+    signal w_draw_start:   STD_LOGIC    :='0';
+    signal w_draw_gameOver:   STD_LOGIC    :='0';
     signal w_y_dino       :   unsigned(pc_GAME_BITS -1 downto 0) :=(others=>'0');
 	 
 	signal w_x_obstacle  :  signed(pc_GAME_BITS downto 0)  :=(others=>'0');
@@ -232,7 +234,7 @@ architecture RTL of dino_top is
         port map(
             i_clk=> r_clk25,
             i_en=> r_double_dabble_en,
-            i_binary=> w_score_binary,
+            i_binary=> r_score_binary,
             o_BCD_DV=> w_7seg_en,
             o_BCD=> w_score_BCD
         );
@@ -259,7 +261,27 @@ architecture RTL of dino_top is
 
         o_7seg1 <= not r_7seg1;
         o_7seg2 <= not r_7seg2;
-        
+
+        ----------------------------------------------
+        --Drawing "Dino Game" text in the start frame
+        ----------------------------------------------
+        draw_start_frame: entity work.draw_start
+        port map(
+            i_x => r_x,
+            i_y => r_y,
+            o_draw_start => w_draw_start
+        );
+
+        ----------------------------------------------
+        --Drawing "Game Over" text in the end frame
+        ----------------------------------------------
+        draw_game_over_frame: entity work.draw_gameOver
+        port map(
+            i_x => r_x,
+            i_y => r_y,
+            o_draw_gameOver_txt => w_draw_gameOver
+        );
+
 
 
         ---------------------------------------------
@@ -267,7 +289,7 @@ architecture RTL of dino_top is
         ---------------------------------------------
         o_hdmi_clk <= r_clk25;
         o_hdmi_de <= w_de;
-        o_hdmi_data_bus <= pc_DINO_COLOR_CODE when (w_draw_dino = '1' and w_de = '1') else
+        o_hdmi_data_bus <= pc_DINO_COLOR_CODE when (w_draw_dino = '1' and w_de = '1')  or (w_draw_start = '1' and w_stand_en = '1' ) or ( w_draw_gameOver = '1' and w_dead_en = '1')else
                         pc_OBSTACLE_COLOR_CODE when ((w_draw_obstacle = '1' or  w_y = 415) and w_de = '1' ) else
                         pc_CLOUD_COLOR_CODE when (w_draw_cloud = '1' and w_de = '1') else  
                         pc_BACK_COLOR_CODE when w_de = '1' else
