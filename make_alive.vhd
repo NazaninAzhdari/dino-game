@@ -33,7 +33,7 @@ architecture RTL of make_alive is
                     
                 elsif rising_edge(i_clk) then
                     if i_run_en = '1' then
-                    --Changing the frame of Run and crawl each 0.1 Sec
+                    --Changing the frame of Feet or wings each 0.1 Sec
                             if r_counter < g_SPEED then
                                 r_counter <= r_counter + 1;
                             else

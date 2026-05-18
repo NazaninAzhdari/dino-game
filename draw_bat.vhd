@@ -44,8 +44,8 @@ architecture RTL of draw_bat is
         --Drawing a bat in the top of the page.
         --width = 32, height = 16
 
-        --Y Start = 80
-        --Y End = 95
+        --Y Start = 65
+        --Y End = 65 + 16
         r_bat1_top <= pc_bat1(r_y - pc_Y_TOP_BAT)(r_x - r_x_bat) when ( r_x >= r_x_bat and r_x < r_x_bat + pc_BAT_WIDTH )
                                                             and (r_y >= pc_Y_TOP_BAT and r_y < pc_Y_TOP_BAT + pc_BAT_HEIGHT) else
                                                             '0';
@@ -59,8 +59,8 @@ architecture RTL of draw_bat is
         --Drawing a bat in the middle of the page.
         --width = 32, height = 16
 
-        --Y Start = 96
-        --Y End = 111
+        --Y Start = 70
+        --Y End = 70 + 16
         r_bat1_middle <= pc_bat1(r_y - pc_Y_MIDDLE_BAT)(r_x - r_x_bat) when ( r_x >= r_x_bat and r_x < r_x_bat + pc_BAT_WIDTH )
                                                             and (r_y >= pc_Y_MIDDLE_BAT and r_y < pc_Y_MIDDLE_BAT + pc_BAT_HEIGHT) else
                                                             '0';
@@ -74,8 +74,8 @@ architecture RTL of draw_bat is
         --Drawing a bat in the buttom of the page.
         --width = 32, height = 16
 
-        --Y Start = 102
-        --Y End = 117                         
+        --Y Start = 85
+        --Y End = 85 + 16                         
         r_bat1_buttom <= pc_bat1(r_y - pc_Y_BUTTOM_BAT)(r_x - r_x_bat) when ( r_x >= r_x_bat and r_x < r_x_bat + pc_BAT_WIDTH )
                                                             and (r_y >= pc_Y_BUTTOM_BAT and r_y < pc_Y_BUTTOM_BAT + pc_BAT_HEIGHT) else
                                                             '0';

@@ -41,12 +41,19 @@ architecture RTL of obstacle_top is
     signal r_obstacle_ID    :  unsigned(2 downto 0)           :=(others=>'0');
     signal r_obstacle_width :  integer range 8 to 33          :=8;
     signal w_lfsr           :  unsigned(4 downto 0)           :=(others=>'0');
-	 
-	 signal r_clk4  :  STD_LOGIC  :='0';
-     signal r_score : integer range 0 to 100 :=0;
+
+    --scoring
+    signal r_score          : integer range 0 to 100          :=0;
 	  
-	  attribute keep : boolean;
-		attribute keep of r_obstacle_DV : signal is true;
+    -------------------------------------------------------------------------------------------------------------------------
+    --NB for myself! I added keep attribute for the obstacle_DV signal, because synthesize tool was optimizing it.
+    --I am feeding obstacle_DV to LFSR CLK, and I want the LFSR to update its state at each rising edge of the obstacle_DV
+    --but since obstacle_DV is low for a huge amount of cycles, and its high for only one or two cycle, synthesize tool 
+    --was considering it as a low signal for ever.
+    --so it thoughts that i only want the reset state of the LFSR "00000", and it did optimize it for me. 
+    -------------------------------------------------------------------------------------------------------------------------
+	attribute keep : boolean;
+	attribute keep of r_obstacle_DV : signal is true;
      
     begin
 
@@ -157,14 +164,14 @@ architecture RTL of obstacle_top is
 
         o_x_obstacle <= r_x_obstacle;
 
-        --------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------------------------------
         --Calculating the score:
         --obstacle_DV is high when we are in off-screen, and it's low when we are in on-screen.
         --by coming to on-screen part, it goes to low(falling edge). by exiting from on-screen it goes high(rising_edge)
         --so by rising edge of this signal we can determine that an obstacle has crossed the whole screen successfully 
         --without colliding with something.
         --so in this case we increase the score by one.
-        --------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------------------------------
         process(r_obstacle_DV, i_reset) is
             begin
                 if i_reset = '1' then

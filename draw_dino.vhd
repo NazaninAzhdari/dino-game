@@ -23,16 +23,16 @@ end draw_dino;
 
 architecture RTL of draw_dino is
     --Different frames of Dino
-    signal r_stand_dino    :   STD_LOGIC   :='0';
+    signal r_stand_dino     :   STD_LOGIC   :='0';
     signal r_runner_dino	:	STD_LOGIC 	:='0';
     signal r_crawling_dino	:	STD_LOGIC 	:='0';
-    signal r_dead_dino     :   STD_LOGIC   :='0';
+    signal r_dead_dino      :   STD_LOGIC   :='0';
 
-    signal r_run1_dino     :   STD_LOGIC   :='0';
-    signal r_run2_dino     :   STD_LOGIC   :='0';
-    signal r_crawl1_dino   :   STD_LOGIC   :='0';    
-    signal r_crawl2_dino   :   STD_LOGIC   :='0';
-    signal r_run1_DV       :   STD_LOGIC   :='0';
+    signal r_run1_dino      :   STD_LOGIC   :='0';
+    signal r_run2_dino      :   STD_LOGIC   :='0';
+    signal r_crawl1_dino    :   STD_LOGIC   :='0';    
+    signal r_crawl2_dino    :   STD_LOGIC   :='0';
+    signal r_run1_DV        :   STD_LOGIC   :='0';
 
 	signal r_x              :  integer range 0 to pc_GAME_WIDTH -1  :=0;
 	signal r_y              :  integer range 0 to pc_GAME_HEIGHT-1  :=0;

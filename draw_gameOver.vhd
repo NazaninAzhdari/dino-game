@@ -20,7 +20,6 @@ architecture RTL of draw_gameOver is
     begin
         r_x <= to_integer(i_x);
         r_y <= to_integer(i_y);
-
                             
         o_draw_gameOver_txt <=  pf_draw_letter_G(r_x-40, r_y-30) when r_y >= 30 and r_y <= 36 and r_x >= 40 and r_x <= 44 else
                                 pf_draw_letter_A(r_x-50, r_y-30) when r_y >= 30 and r_y <= 36 and r_x >= 50 and r_x <= 54 else

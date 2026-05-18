@@ -20,7 +20,8 @@ architecture RTL of draw_start is
     begin
         r_x <= to_integer(i_x(pc_GAME_BITS-1 downto 1));
         r_y <= to_integer(i_y(pc_GAME_BITS-1 downto 1));
-        
+    
+    --draw "Dino Game" text in the start frame
     o_draw_start <= pc_start(r_y -12 )(r_x - 20) when (r_y >= 12 and r_y < 32) and (r_x>= 20 and r_x <60) else '0';
 
     end RTL;

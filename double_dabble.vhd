@@ -18,7 +18,7 @@ end double_dabble;
 
 architecture RTL of double_dabble is
     type t_double_dabble_SM is(IDLE,SHIFT, CHECK_VALUE, CHECK_SHIFT, OVER);
-    signal r_SM     :   t_double_dabble_SM                                  :=IDLE;
+    signal r_SM             :   t_double_dabble_SM                          :=IDLE;
 
     signal r_binary         :   unsigned(i_binary'left downto 0)            :=(others=>'0');
     signal r_BCD            :   unsigned(o_BCD'left downto 0)               :=(others=>'0');
@@ -28,8 +28,8 @@ architecture RTL of double_dabble is
 	 
     begin
         process(i_clk) is
-				variable v_LSB    :   natural;
-				variable v_BCD 	:	 unsigned(3 downto 0);
+				variable v_LSB    :  integer;
+				variable v_BCD 	  :	 unsigned(3 downto 0);
 
             begin
                 if rising_edge(i_clk) then
@@ -38,6 +38,9 @@ architecture RTL of double_dabble is
                             r_shift_index <= 0;
                             r_bcd_index <= 0;
 
+                            ----------------------------------------------------------------
+                            --If enable goes high, register the binary number for conversion
+                            ----------------------------------------------------------------
                             if i_en = '1' then   
                                 r_binary <= i_binary;
                                 r_BCD <= (others =>'0');
@@ -45,6 +48,9 @@ architecture RTL of double_dabble is
                             end if;
                         
                         when SHIFT =>
+                            ------------------------------------------------------------------------------
+                            --Shift both BCD and binary number to left, increase the shiift index by one.
+                            ------------------------------------------------------------------------------
                             r_BCD <= r_BCD(r_BCD'left-1 downto 0) & r_binary(r_binary'left);
                             r_binary <= r_binary(r_binary'left-1 downto 0) & '0';
                             r_shift_index <= r_shift_index + 1;
@@ -52,23 +58,31 @@ architecture RTL of double_dabble is
                             r_SM <= CHECK_SHIFT;
 									 
 						when CHECK_SHIFT =>
+                            ---------------------------------------------------------------------------------
+                            --Check if we have shifted all the bits or not! if yes, then converting is done!
+                            ---------------------------------------------------------------------------------
                             if r_shift_index < g_BINARY_BIT_LIMIT then
                                 r_SM <= CHECK_VALUE;
                             else
                                 r_SM <= OVER;
                                 r_shift_index <= 0;
                             end if;
+                            --NB for myself! after shifting the last bit, we dont check for BCDs greather than 5. 
+                            --we directly go to the Over state. 
                         
                         when CHECK_VALUE =>
+                            ----------------------------------------------------------------------------
+                            --check each BCD one by one, if it's more than or equal to 5, add 3 to it.
+                            ----------------------------------------------------------------------------
                             v_LSB := r_BCD_INDEX*4;
-									 v_BCD := r_BCD(v_LSB + 3 downto v_LSB);
+							v_BCD := r_BCD(v_LSB + 3 downto v_LSB);
 
                             if r_BCD_index < c_BCD_LIMIT then
                                 if v_BCD >= 5 then
                                     v_BCD := v_BCD  + 3;
                                 end if;
                                 
-										  r_BCD(v_LSB + 3 downto v_LSB) <= v_BCD;
+								r_BCD(v_LSB + 3 downto v_LSB) <= v_BCD;
                                 r_BCD_INDEX <= r_BCD_INDEX + 1;
                                 r_SM <= CHECK_VALUE;
 
@@ -82,8 +96,7 @@ architecture RTL of double_dabble is
                         
                         when others =>
                             r_SM <= IDLE;
-
-                        end case;
+                    end case;
                 end if;
             end process;
 

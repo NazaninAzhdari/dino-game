@@ -13,7 +13,7 @@ entity draw_cactus is
         i_y                     :   in       unsigned(pc_GAME_BITS - 1 downto 0);
         i_x_cactus              :   in       signed(pc_GAME_BITS  downto 0);       --one bit more, BCS its signed
         o_draw_small_cactus     :   out      STD_LOGIC;
-        o_draw_big_cactus      :   out      STD_LOGIC;
+        o_draw_big_cactus       :   out      STD_LOGIC;
         o_draw_2_small_cactus   :   out      STD_LOGIC;
         o_draw_2_big_cactus     :   out      STD_LOGIC
     );

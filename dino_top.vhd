@@ -43,27 +43,26 @@ architecture RTL of dino_top is
     signal r_x          :   unsigned(pc_GAME_BITS -1 downto 0)   :=(others=>'0');  --divided by 4
     signal r_y          :   unsigned(pc_GAME_BITS -1 downto 0)   :=(others=>'0');  --divided by 4
 
-    signal w_DE           :   STD_LOGIC    :='0';
-    signal w_draw_dino    :   STD_LOGIC    :='0';
-    signal w_draw_obstacle:   STD_LOGIC    :='0';
-    signal w_draw_cloud:   STD_LOGIC    :='0';
-    signal w_draw_start:   STD_LOGIC    :='0';
-    signal w_draw_gameOver:   STD_LOGIC    :='0';
-    signal w_y_dino       :   unsigned(pc_GAME_BITS -1 downto 0) :=(others=>'0');
-	 
-	signal w_x_obstacle  :  signed(pc_GAME_BITS downto 0)  :=(others=>'0');
-	signal	  w_y_obstacle  :   integer;
-	signal	  w_obstacle_width  :   integer;
-    signal	  w_obstacle_height  :   integer;
+    signal w_DE             :   STD_LOGIC    :='0';
+    signal w_draw_dino      :   STD_LOGIC    :='0';
+    signal w_draw_obstacle  :   STD_LOGIC    :='0';
+    signal w_draw_cloud     :   STD_LOGIC    :='0';
+    signal w_draw_start     :   STD_LOGIC    :='0';
+    signal w_draw_gameOver  :   STD_LOGIC    :='0';
+
+    signal w_y_dino         :   unsigned(pc_GAME_BITS -1 downto 0) :=(others=>'0');
+	signal w_x_obstacle     :   signed(pc_GAME_BITS downto 0)      :=(others=>'0');
+	signal w_y_obstacle     :   integer;
+	signal w_obstacle_width :   integer;
+    signal w_obstacle_height:   integer;
 
     signal w_score_binary : unsigned(7 downto 0)  :=(others=>'0');
     signal r_score_binary : unsigned(7 downto 0)  :=(others=>'0');
 
-    signal r_7seg1, r_7seg2 :  unsigned(6 downto 0) :=(others=>'0');
-    signal r_double_dabble_en  :   STD_LOGIC  :='0';
-    signal w_7seg_en   :  STD_LOGIC  :='0';
-    signal w_score_BCD   :  unsigned(7 downto 0);
-
+    signal r_7seg1, r_7seg2     :  unsigned(6 downto 0) :=(others=>'0');
+    signal r_double_dabble_en   :   STD_LOGIC           :='0';
+    signal w_7seg_en            :  STD_LOGIC            :='0';
+    signal w_score_BCD          :  unsigned(7 downto 0) :=(others=>'0');
 
     begin
         ---------------------------------------
@@ -77,7 +76,6 @@ architecture RTL of dino_top is
             i_clk=> i_clk,    --50MHz
             o_clk=> r_clk25   --25MHz
         );
-
 
         ---------------------------------------------
         --Debouncing the Buttons
@@ -135,14 +133,12 @@ architecture RTL of dino_top is
             o_jump_en=> w_jump_en,
             o_crawl_en=> w_crawl_en,
             o_reset_game => w_reset_game,
-
             i_x_obstacle => w_x_obstacle,
             i_y_obstacle => w_y_obstacle,
             i_obstacle_width => w_obstacle_width,
             i_obstacle_height => w_obstacle_height,
             i_y_dino => w_y_dino
         );
-
 
         -----------------------------------------
         --Dino jump function
@@ -187,7 +183,6 @@ architecture RTL of dino_top is
             o_draw_cloud=> w_draw_cloud
         );
 
-
         ----------------------------------------------
         --Obstacle management - Drawing and Movement
         ----------------------------------------------
@@ -206,10 +201,10 @@ architecture RTL of dino_top is
             o_score => w_score_binary
         );
 
-        -----------------------------------------------------------------------------
+        -------------------------------------------------------------------------------
         --Generating enable signal for double-dabble
-        --enable goes high if the score has changed. meaning that we have a new score
-        -----------------------------------------------------------------------------
+        --enable goes high if the score has changed, meaning that we have a new score.
+        -------------------------------------------------------------------------------
         process(r_clk25) is
             begin
                 if rising_edge(r_clk25) then
@@ -222,13 +217,12 @@ architecture RTL of dino_top is
                 end if;
             end process;
 
-
         -------------------------------------------------------------------
         --Convert the Binary Score to BCD using double dabble algorithem
         -------------------------------------------------------------------
         convert_binary_to_BCD: entity work.double_dabble
         generic map(
-            g_BINARY_BIT_LIMIT=> 8,   --Maximum bit to represent 9999
+            g_BINARY_BIT_LIMIT=> 8,    --Maximum bit to represent 9999
             g_DECIMAL_DIGIT_LIMIT=> 2  --Maximum digit to represent 9999
         )
         port map(
@@ -258,7 +252,6 @@ architecture RTL of dino_top is
             o_7seg => r_7seg2 
         );
 
-
         o_7seg1 <= not r_7seg1;
         o_7seg2 <= not r_7seg2;
 
@@ -281,8 +274,6 @@ architecture RTL of dino_top is
             i_y => r_y,
             o_draw_gameOver_txt => w_draw_gameOver
         );
-
-
 
         ---------------------------------------------
         --Painting the game + HDMI ports connection
