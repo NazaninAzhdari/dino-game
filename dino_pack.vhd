@@ -94,9 +94,6 @@ package dino_pack is
     ----------------------------------
     constant pc_X_START_COL_AREA    :   integer  :=pc_X_DINO + 7;                  --adding 7 is for limiting the collision area and make it smaller.
     constant pc_X_END_COL_AREA      :   integer  :=pc_X_DINO + pc_DINO_SIZE - 10;  --subtracting 10 is for limiting the collision area and make it smaller.
-    --collision area when crawling
-    constant pc_Y_START_COL_AREA_CRAWL    :
-    constant pc_Y_END_COL_AREA_CRAWL      :
 
     ----------------------------------
     --Color Codes
