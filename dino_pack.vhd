@@ -103,6 +103,7 @@ package dino_pack is
     constant pc_CLOUD_COLOR_CODE        :   unsigned     :="110000001100000011000000";
     constant pc_BACK_COLOR_CODE         :   unsigned     :="111000001110000011100000";
     
+    type t_tone_array is array (natural range <>) of integer;
     -----------------------------------------------------
     --Read Only Memory for storing the Characters
     -----------------------------------------------------

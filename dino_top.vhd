@@ -20,6 +20,12 @@ entity dino_top is
         o_hdmi_DE           :   out     STD_LOGIC;
         o_hdmi_data_bus     :   out     unsigned(23 downto 0);
 
+        --audio interface
+        o_MCLK          :   out     STD_LOGIC;
+        o_LRCLK         :   out     STD_LOGIC;
+        o_BCLK          :   out     STD_LOGIC;
+        o_DATA          :   out     STD_LOGIC;
+
         --7 segment interface
         o_7seg1             :   out     unsigned(6 downto 0);
         o_7seg2             :   out     unsigned(6 downto 0)
@@ -139,6 +145,24 @@ architecture RTL of dino_top is
             i_obstacle_height => w_obstacle_height,
             i_y_dino => w_y_dino
         );
+
+        -----------------------------------------
+        --Audio Interface
+        -----------------------------------------
+        generating_sound: entity work.audio_top
+        port map(
+            i_clk50 => i_clk,
+            i_reset => r_reset,
+            i_jump_sound_En => w_jump_en,
+            i_crawl_sound_En => w_crawl_en,
+            i_dead_sound_En => w_dead_en,
+            i_start_sound_En => w_run_en,
+            o_MCLK => o_MCLK,
+            o_LRCLK => o_LRCLK,
+            o_BCLK => o_BCLK,
+            o_DATA => o_DATA
+        );
+
 
         -----------------------------------------
         --Dino jump function
