@@ -31,8 +31,8 @@ architecture RTL of melody_gen is
     signal r_sample             : signed(g_SAMPLE_WIDTH-1 downto 0)   := (others => '0');
     signal r_duration_counter   : integer range 0 to g_DURATION_LIMIT := 0;
     signal tone_indx            : integer range 0 to g_TONE_LIMIT-1   :=0;
-    signal r_en : STD_LOGIC  :='0';
-    signal w_en : STD_LOGIC  :='0';
+    signal r_en                 : STD_LOGIC                           :='0';
+    signal w_en                 : STD_LOGIC                           :='0';
 
     begin
         process(i_clk) is

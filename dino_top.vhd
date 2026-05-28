@@ -21,10 +21,10 @@ entity dino_top is
         o_hdmi_data_bus     :   out     unsigned(23 downto 0);
 
         --audio interface
-        o_MCLK          :   out     STD_LOGIC;
-        o_LRCLK         :   out     STD_LOGIC;
-        o_BCLK          :   out     STD_LOGIC;
-        o_DATA          :   out     STD_LOGIC;
+        o_MCLK              :   out     STD_LOGIC;
+        o_LRCLK             :   out     STD_LOGIC;
+        o_BCLK              :   out     STD_LOGIC;
+        o_DATA              :   out     STD_LOGIC;
 
         --7 segment interface
         o_7seg1             :   out     unsigned(6 downto 0);
@@ -64,12 +64,13 @@ architecture RTL of dino_top is
 	signal w_obstacle_width :   integer;
     signal w_obstacle_height:   integer;
 
-    signal w_score_binary : unsigned(15 downto 0)  :=(others=>'0');
-    signal r_score_binary : unsigned(15 downto 0)  :=(others=>'0');
+    signal w_score_binary   : unsigned(15 downto 0)  :=(others=>'0');
+    signal r_score_binary   : unsigned(15 downto 0)  :=(others=>'0');
 
-    signal r_7seg1, r_7seg2, r_7seg3, r_7seg4     :  unsigned(6 downto 0) :=(others=>'0');
-    signal r_double_dabble_en   :   STD_LOGIC           :='0';
-    signal w_7seg_en            :  STD_LOGIC            :='0';
+    signal r_7seg1, r_7seg2     :  unsigned(6 downto 0)  :=(others=>'0');
+    signal r_7seg3, r_7seg4     :  unsigned(6 downto 0)  :=(others=>'0');
+    signal r_double_dabble_en   :   STD_LOGIC            :='0';
+    signal w_7seg_en            :  STD_LOGIC             :='0';
     signal w_score_BCD          :  unsigned(15 downto 0) :=(others=>'0');
 
     begin
