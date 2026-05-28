@@ -17,7 +17,7 @@ entity obstacle_top is
         o_obstacle_width    :   out     integer;
         o_x_obstacle        :   out     signed(pc_GAME_BITS downto 0);  --one bit more, BCS its signed
         o_y_obstacle        :   out     integer;
-        o_score             :   out     unsigned(7 downto 0)
+        o_score             :   out     unsigned(15 downto 0)
     );
 end obstacle_top;
 
@@ -37,13 +37,13 @@ architecture RTL of obstacle_top is
     
     --regarding obstacle
     signal r_x_obstacle     :  signed(pc_GAME_BITS downto 0)  :=(others=>'0');
-    signal r_obstacle_DV    :  STD_LOGIC                      :='0';
+    signal r_obstacle_DV    :  STD_LOGIC                      :='1';
     signal r_obstacle_ID    :  unsigned(2 downto 0)           :=(others=>'0');
     signal r_obstacle_width :  integer range 8 to 33          :=8;
     signal w_lfsr           :  unsigned(4 downto 0)           :=(others=>'0');
 
     --scoring
-    signal r_score          : integer range 0 to 100          :=0;
+    signal r_score          : integer range 0 to 9999          :=0;
 	  
     -------------------------------------------------------------------------------------------------------------------------
     --NB for myself! I added keep attribute for the obstacle_DV signal, because synthesize tool was optimizing it.
@@ -178,8 +178,8 @@ architecture RTL of obstacle_top is
                     r_score <= 0;
 
                 elsif rising_edge(r_obstacle_DV) then
-						if r_score < 100 then
-                    r_score <= r_score + 1;
+                    if r_score < 9999 then
+                        r_score <= r_score + 1;
                     end if;
                 end if;
             end process;

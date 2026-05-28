@@ -28,7 +28,9 @@ entity dino_top is
 
         --7 segment interface
         o_7seg1             :   out     unsigned(6 downto 0);
-        o_7seg2             :   out     unsigned(6 downto 0)
+        o_7seg2             :   out     unsigned(6 downto 0);
+        o_7seg3             :   out     unsigned(6 downto 0);
+        o_7seg4             :   out     unsigned(6 downto 0)
     );
 end dino_top;
 
@@ -62,13 +64,13 @@ architecture RTL of dino_top is
 	signal w_obstacle_width :   integer;
     signal w_obstacle_height:   integer;
 
-    signal w_score_binary : unsigned(7 downto 0)  :=(others=>'0');
-    signal r_score_binary : unsigned(7 downto 0)  :=(others=>'0');
+    signal w_score_binary : unsigned(15 downto 0)  :=(others=>'0');
+    signal r_score_binary : unsigned(15 downto 0)  :=(others=>'0');
 
-    signal r_7seg1, r_7seg2     :  unsigned(6 downto 0) :=(others=>'0');
+    signal r_7seg1, r_7seg2, r_7seg3, r_7seg4     :  unsigned(6 downto 0) :=(others=>'0');
     signal r_double_dabble_en   :   STD_LOGIC           :='0';
     signal w_7seg_en            :  STD_LOGIC            :='0';
-    signal w_score_BCD          :  unsigned(7 downto 0) :=(others=>'0');
+    signal w_score_BCD          :  unsigned(15 downto 0) :=(others=>'0');
 
     begin
         ---------------------------------------
@@ -246,8 +248,8 @@ architecture RTL of dino_top is
         -------------------------------------------------------------------
         convert_binary_to_BCD: entity work.double_dabble
         generic map(
-            g_BINARY_BIT_LIMIT=> 8,    --Maximum bit to represent 9999
-            g_DECIMAL_DIGIT_LIMIT=> 2  --Maximum digit to represent 9999
+            g_BINARY_BIT_LIMIT=> 16,    --Maximum bit to represent 9999
+            g_DECIMAL_DIGIT_LIMIT=> 4  --Maximum digit to represent 9999
         )
         port map(
             i_clk=> r_clk25,
@@ -276,8 +278,26 @@ architecture RTL of dino_top is
             o_7seg => r_7seg2 
         );
 
+        seven_segment_3: entity work.SevenSeg_display
+        port map(
+            i_clk=> r_clk25,
+            i_BCD => w_score_BCD(11 downto 8),
+            i_en=> w_7seg_en,
+            o_7seg => r_7seg3
+        );
+
+        seven_segment_4: entity work.SevenSeg_display
+        port map(
+            i_clk=> r_clk25,
+            i_BCD => w_score_BCD(15 downto 12),
+            i_en=> w_7seg_en,
+            o_7seg => r_7seg4 
+        );
+
         o_7seg1 <= not r_7seg1;
         o_7seg2 <= not r_7seg2;
+        o_7seg3 <= not r_7seg3;
+        o_7seg4 <= not r_7seg4;
 
         ----------------------------------------------
         --Drawing "Dino Game" text in the start frame
