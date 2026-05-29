@@ -17,7 +17,7 @@ The goal of this project is to implement a fully functional, hardware-based game
 ### **2. System Architecture**
 The architecture is highly **modular**, meaning the game is split into many small parts that work together. At the center is the **Top-Level Module (`top/dino_top`)**, which connects the inputs (buttons) to the logic and outputs (HDMI and Audio).  
   
-## The Memory Game's Block Diagram:  
+## The Dino Game's Block Diagram:  
 ![The Dino Game's Diagram](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/dino_game_block_diagram.png)  
   
 The system follows a standard synchronous design:
@@ -74,10 +74,10 @@ Let'have a look at Dino Game's flow chart and explore the functionality of each 
 ---
 
 ### **4. Hardware Deployment/Setup Guide**  
-The project is specifically designed for the **Altera Cyclone V GX Starter Kit** (FPGA device part number **5CGXFC5C6F27C7**). 
-  
-![Cyclone V GX Starter Kit](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/cyclone_V_GX_block_diagram.png)  
-  
+The project is specifically designed for the **Altera Cyclone V GX Starter Kit** (FPGA device part number **5CGXFC5C6F27C7**).
+
+![Cyclone V GX Starter Kit](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/cyclone_V_GX_block_diagram.png)
+
 The hardware components used in Simon's Memory Game project include:  
 *   **Switches and Push Buttons**  
 *   **HDMI TX - Video Output Interface**  
@@ -85,7 +85,6 @@ The hardware components used in Simon's Memory Game project include:
 *   **7-Segment (Hex) Displays**  
   
 ## Setup:
-
 To run this game on your **Cyclone V GX Starter Kit**, follow these steps:
 
 1.  **Preparation**: 
@@ -98,7 +97,7 @@ To run this game on your **Cyclone V GX Starter Kit**, follow these steps:
     *   Assign the buttons (Jump, Crawl, Start) to the switches.
     *   Assign the HDMI outputs (HS, VS, DE, Video-bus) and Audio pins (MCLK, BCLK, DATA, LRCLK) according to your board's manual. For the Cyclone V GX FPGA Board, I have used the follwing Pinout table:  
   
-[Click here to open the Pinout-Table.CSV](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pinout/dino_game.csv)  
+        [Click here to open the Pinout-Table.CSV](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pinout/dino_game.csv)  
 
 3.  **Compilation**:
     *   Add all the `.vhd` files to your Quartus project.
