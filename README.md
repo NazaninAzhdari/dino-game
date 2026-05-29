@@ -36,8 +36,9 @@ The `logic/dino_SM.vhd` module acts as the central controller for the game, util
 *   **`IDLE`**: This is the default starting state where the system waits for the user to press the **`i_start`** button to begin the game.
 *   **`RUN`**: In this state, the game is active. The module enables the dinosaur's movement and animation frames while monitoring user inputs for jumping (**`i_jump_button_L`**) and crawling (**`i_crawl_button_L`**).
 *   **`GAME_OVER`**: This state is triggered when a collision is detected, effectively halting the game logic and enabling the "dead" animation frame for the dinosaur.  
-  
+
 The state machine's main job is to coordinate the behavior of other modules by toggling specific enable signals. It outputs control signals such as **`o_run_en`**, **`o_jump_en`**, and **`o_crawl_en`** to determine which visual frame of the dinosaur should be drawn on the screen and whether obstacles should continue moving. Additionally, it manages the **`o_reset_game`** signal to clear scores and positions between game sessions.
+
 ---
 
 ### **3. Detailed Module Explanation**  
@@ -77,27 +78,27 @@ The project is specifically designed for the **Altera Cyclone V GX Starter Kit**
   
 ![Cyclone V GX Starter Kit](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/cyclone_V_GX_block_diagram.png)  
   
-  
 The hardware components used in Simon's Memory Game project include:  
 *   **Switches and Push Buttons**  
 *   **HDMI TX - Video Output Interface**  
 *   **24-bit CODEC line-out - Audio Output Hardware**  
 *   **7-Segment (Hex) Displays**  
   
-  
 ## Setup:
 
 To run this game on your **Cyclone V GX Starter Kit**, follow these steps:
 
 1.  **Preparation**: 
-    *   Ensure you have **Quartus Prime** installed.
+    *   Ensure you have **Quartus II** installed.
     *   Connect your FPGA board to your computer via the USB-Blaster port.
-    *   Connect a VGA monitor and speakers (or headphones) to the board's ports.
+    *   Connect a HDMI monitor and speakers (or headphones) to the board's ports.
 
 2.  **Pin Assignment**:
     *   Map the clock input to the 50MHz oscillator.
-    *   Assign the buttons (Jump, Crawl, Start) to the onboard tactile switches.
-    *   Assign the VGA outputs (HS, VS, RGB) and Audio pins (MCLK, BCLK, DATA, LRCLK) according to the Cyclone V GX manual.
+    *   Assign the buttons (Jump, Crawl, Start) to the switches.
+    *   Assign the HDMI outputs (HS, VS, DE, Video-bus) and Audio pins (MCLK, BCLK, DATA, LRCLK) according to your board's manual. For the Cyclone V GX FPGA Board, I have used the follwing Pinout table:  
+  
+[Click here to open the Pinout-Table.CSV](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pinout/dino_game.csv)  
 
 3.  **Compilation**:
     *   Add all the `.vhd` files to your Quartus project.
