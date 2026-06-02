@@ -1,10 +1,12 @@
 # VHDL-Based Implementation of "Chrome Dino Game"
 
-Welcome to the **Chrome Dino Game** repository! This repo contains a complete reconstruction of the famous "Chrome Dino" game, designed specifically to run on the **Cyclone V GX FPGA** using pure VHDL. Let's have a quick Demo of the Game in video below. I really recommend you to watch the video, it's too much FUN.=)))))  
+Welcome to the **Chrome Dino Game** repository! This repo contains a complete reconstruction of the famous "Chrome Dino" game, designed specifically to run on the **Cyclone V GX FPGA** using pure VHDL. Let's have a quick Demo of the Game in video below.
   
+## Watch my video on youtube (click on the picture below):  
+[![Watch the video](https://img.youtube.com/vi/xPbkNaEA4XQ/maxresdefault.jpg)](https://youtu.be/xPbkNaEA4XQ)  
   
 **Why do I Build games?**  
-In the summer of 2026, I decided that I wanted to truly master RTL design, and I asked myself: **what could be more joyful than building games in hardware?=)))**  
+In the spring of 2026, I decided that I wanted to truly master RTL design, and I asked myself: **what could be more joyful than building games in hardware?=)))**  
 That idea became the start of my FPGA game‑development adventure. The Dino Game was my third serious milestone (and honestly, my favorite one), and through it I practiced real RTL design, timing, video output, and hardware‑driven game logic. This project represents the moment where my learning turned into something creative, fun, and fully my own. 
 
 ---
