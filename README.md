@@ -39,7 +39,7 @@ The state machine's main job is to coordinate the behavior of other modules by t
 ### **3. Detailed Module Explanation**  
 Let'have a look at Dino Game's flow chart and explore the functionality of each module in detail.  
   
-![The Dino Game's Flow Chart](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/dino_game_flow_chart.png)  
+![The Dino Game's Flow Chart](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/game_flow_chart.png)  
   
 #### **Core Game Logic**  
 *   **`top/dino_top`**: This is the "brain" of the project. It integrates all sub-modules.
