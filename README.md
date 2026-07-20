@@ -68,13 +68,9 @@ Let'have a look at Dino Game's flow chart and explore the functionality of each 
 
 ---
 
-### **4. Hardware Deployment/Setup Guide**  
+### **4. Setup Guide**  
 The project is tested on **Altera Cyclone V GX Starter Kit**.
 
-![Cyclone V GX Starter Kit](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/cyclone_V_GX_block_diagram.png)
-
-  
-## Setup:
 For the Cyclone V GX FPGA Board, I have used the follwing Pinout table:  
 [Click here to open the Pinout-Table.CSV](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pinout/dino_game.csv)  
 
