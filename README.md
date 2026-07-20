@@ -1,34 +1,27 @@
 # VHDL-Based Implementation of "Chrome Dino Game"
 
-Welcome to the **Chrome Dino Game** repository! This repo contains a complete reconstruction of the famous "Chrome Dino" game, designed specifically to run on the **Cyclone V GX FPGA** using pure VHDL. Let's have a quick Demo of the Game in video below.
+Welcome to the **Chrome Dino Game** repository! This repo contains a complete reconstruction of the famous "Chrome Dino" game, designed to run on the **Cyclone V GX FPGA** using pure VHDL. Let's have a quick Demo of the Game in video below.
   
 ## Watch my video on youtube (click on the picture below):  
 [![Watch the video](https://img.youtube.com/vi/xPbkNaEA4XQ/maxresdefault.jpg)](https://youtu.be/xPbkNaEA4XQ)  
   
 **Why do I Build games?**  
 In the spring of 2026, I decided that I wanted to truly master RTL design, and I asked myself: **what could be more joyful than building games in hardware?=)))**  
-That idea became the start of my FPGA game‑development adventure. The Dino Game was my third serious milestone (and honestly, my favorite one), and through it I practiced real RTL design, timing, video output, and hardware‑driven game logic. This project represents the moment where my learning turned into something creative, fun, and fully my own. 
+That idea became the start of my FPGA game‑development adventure. The Dino Game was my third serious milestone (and honestly, my favorite one), and through it I practiced real RTL design, timing, video output, and hardware‑driven game logic.
 
 ---
 
 ### **1. Project Overview**
-The goal of this project is to implement a fully functional, hardware-based game using VHDL. Unlike software games, this project runs directly on FPGA hardware, ensuring low latency and high performance. The game allows a player to control a dinosaur, jumping or crawling to avoid obstacles like cactuses and bats. As the game progresses, the player’s score is displayed on the board's seven-segment displays.
+The goal of this project is to implement the Chrome Dino game On FPGA. The game allows a player to control a dinosaur, jumping or crawling to avoid obstacles like cactuses and bats. As the game progresses, the player’s score is displayed on the board's seven-segment displays.
 
 ---
 
 ### **2. System Architecture**
-The architecture is highly **modular**, meaning the game is split into many small parts that work together. At the center is the **Top-Level Module (`top/dino_top`)**, which connects the inputs (buttons) to the logic and outputs (HDMI and Audio).  
+The architecture is **modular**. At the center is the **Top-Level Module (`top/dino_top`)**, which connects the inputs (buttons) to the logic and outputs (HDMI and Audio).  
   
 ## The Dino Game's Block Diagram:  
 ![The Dino Game's Diagram](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/dino_game_block_diagram.png)  
   
-The system follows a standard synchronous design:
-*   **Input Processing:** Physical button signals are cleaned to prevent errors using debounce filter.
-*   **Game Logic:** A central State Machine manages the game flow (Start, Playing, and Game Over).
-*   **Graphics Engine:** Modules calculate pixel positions and decide what to draw on the screen in real-time.
-*   **Sound Engine:** A dedicated audio controller generates sound samples for game events like jumping or dying.  
-  
-
 ## State Machine(FSM):    
 The `logic/dino_SM.vhd` module acts as the central controller for the game, utilizing a synchronous finite state machine to manage three distinct operational states.  
   
@@ -76,43 +69,17 @@ Let'have a look at Dino Game's flow chart and explore the functionality of each 
 ---
 
 ### **4. Hardware Deployment/Setup Guide**  
-The project is specifically designed for the **Altera Cyclone V GX Starter Kit** (FPGA device part number **5CGXFC5C6F27C7**).
+The project is tested on **Altera Cyclone V GX Starter Kit**.
 
 ![Cyclone V GX Starter Kit](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/cyclone_V_GX_block_diagram.png)
 
-The hardware components used in Simon's Memory Game project include:  
-*   **Switches and Push Buttons**  
-*   **HDMI TX - Video Output Interface**  
-*   **24-bit CODEC line-out - Audio Output Hardware**  
-*   **7-Segment (Hex) Displays**  
   
 ## Setup:
-To run this game on your **Cyclone V GX Starter Kit**, follow these steps:
+For the Cyclone V GX FPGA Board, I have used the follwing Pinout table:  
+[Click here to open the Pinout-Table.CSV](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pinout/dino_game.csv)  
 
-1.  **Preparation**: 
-    *   Ensure you have **Quartus II** installed.
-    *   Connect your FPGA board to your computer via the USB-Blaster port.
-    *   Connect a HDMI monitor and speakers (or headphones) to the board's ports.
-
-2.  **Pin Assignment**:
-    *   Map the clock input to the 50MHz oscillator.
-    *   Assign the buttons (Jump, Crawl, Start) to the switches.
-    *   Assign the HDMI outputs (HS, VS, DE, Video-bus) and Audio pins (MCLK, BCLK, DATA, LRCLK) according to your board's manual. For the Cyclone V GX FPGA Board, I have used the follwing Pinout table:  
-  
-        [Click here to open the Pinout-Table.CSV](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pinout/dino_game.csv)  
-
-3.  **Compilation**:
-    *   Add all the `.vhd` files to your Quartus project.
-    *   Set `dino_top` as the Top-Level Entity.
-    *   Run the "Start Compilation" process.
-
-4.  **Programming**:
-    *   Open the "Programmer" tool in Quartus.
-    *   Detect the hardware and load the generated `.sof` file.
-    *   Click "Start" to load the game onto the FPGA.
-
-5.  **How to Play**:
-    *   Press the **Start** button to begin.
-    *   Use the **Jump** button to clear cacti and low-flying bats.
-    *   Use the **Crawl** button to duck under high-flying bats.
-    *   Watch your score increase on the **Seven-Segment Display**!
+**How to Play**:
+*   Press the **Start** button to begin.
+*   Use the **Jump** button to clear cacti and low-flying bats.
+*   Use the **Crawl** button to duck under high-flying bats.
+*   Watch your score increase on the **Seven-Segment Display**!
