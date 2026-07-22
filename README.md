@@ -27,12 +27,12 @@ That idea became the start of my FPGA game‑development adventure. The Dino Gam
 
 ---
 
-### **1. Project Overview**
+### **Project Overview**
 The goal of this project is to implement the Chrome Dino game On FPGA. The game allows a player to control a dinosaur, jumping or crawling to avoid obstacles like cactuses and bats. As the game progresses, the player’s score is displayed on the board's seven-segment displays.
 
 ---
 
-### **2. System Architecture**
+### **System Architecture**
 The architecture is **modular**. At the center is the **Top-Level Module (`top/dino_top`)**, which connects the inputs (buttons) to the logic and outputs (HDMI and Audio).  
   
 ## The Dino Game's Block Diagram:  
@@ -52,7 +52,7 @@ The state machine's main job is to coordinate the behavior of other modules by t
 
 ---
 
-### **3. Detailed Module Explanation**  
+### **Detailed Module Explanation**  
   
 #### **Core Game Logic**  
 *   **`top/dino_top`**: This is the "brain" of the project. It integrates all sub-modules.
@@ -81,7 +81,7 @@ The state machine's main job is to coordinate the behavior of other modules by t
 
 ---
 
-### **4. Setup Guide**  
+### **Setup Guide**  
 The project is tested on **Altera Cyclone V GX Starter Kit**.
 
 For the Cyclone V GX FPGA Board, I have used the follwing Pinout table:  
