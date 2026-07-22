@@ -1,5 +1,21 @@
-# VHDL-Based Implementation of "Chrome Dino Game"
+<div align="center">
+  <h1>VHDL-Based Implementation of Chrome Dino Game</h1>
+</div>
 
+<p align="center" style="margin-top: 0;">
+  <a href="https://github.com/NazaninAzhdari/dino-game" target="_blank" style="text-decoration: none;">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+         alt="GitHub Repo"
+         width="32"
+         height="32"
+         style="vertical-align: middle;">
+    <span style="font-size: 16px; margin-left: 8px; vertical-align: middle;">
+      View the code on GitHub
+    </span>
+  </a>
+</p>
+
+---
 Welcome to the **Chrome Dino Game** repository! This repo contains a complete reconstruction of the famous "Chrome Dino" game, designed to run on the **Cyclone V GX FPGA** using pure VHDL. Let's have a quick Demo of the Game in video below.
   
 ## Watch my video on youtube (click on the picture below):  
@@ -20,12 +36,12 @@ The goal of this project is to implement the Chrome Dino game On FPGA. The game 
 The architecture is **modular**. At the center is the **Top-Level Module (`top/dino_top`)**, which connects the inputs (buttons) to the logic and outputs (HDMI and Audio).  
   
 ## The Dino Game's Block Diagram:  
-![The Dino Game's Diagram](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/dino_game_block_diagram.png)  
+![The Dino Game's Diagram](https://nazaninazhdari.github.io/dino-game/doc/pic/dino_game_block_diagram.png)  
   
 ## State Machine(FSM):    
 The `logic/dino_SM.vhd` module acts as the central controller for the game, utilizing a synchronous finite state machine to manage three distinct operational states.  
   
-![The Dino Game's FSM](https://github.com/NazaninAzhdari/dino-game/blob/main/doc/pic/dino_game_state_machine.png)
+![The Dino Game's FSM](https://nazaninazhdari.github.io/dino-game/doc/pic/dino_game_state_machine.png)
 
 ### **States of the State Machine**
 *   **`IDLE`**: This is the default starting state where the system waits for the user to press the **`i_start`** button to begin the game.
