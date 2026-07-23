@@ -1,8 +1,5 @@
-<div align="center">
-  <h1>VHDL-Based Implementation of Chrome Dino Game</h1>
-</div>
 
-<p align="center" style="margin-top: 0;">
+<p align="right" style="margin-top: 0;">
   <a href="https://github.com/NazaninAzhdari/dino-game" target="_blank" style="text-decoration: none;">
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
          alt="GitHub Repo"
@@ -15,7 +12,9 @@
   </a>
 </p>
 
----
+<div align="center">
+  <h1>Chrome Dino Game on FPGA</h1>
+</div>
 Welcome to the **Chrome Dino Game** repository! This repo contains a complete reconstruction of the famous "Chrome Dino" game, designed to run on the **Cyclone V GX FPGA** using pure VHDL. Let's have a quick Demo of the Game in video below.
   
 ## Watch my video on youtube (click on the picture below):  
